@@ -16,5 +16,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+# Ignore built files
+*.js
 
 
