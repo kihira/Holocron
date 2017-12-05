@@ -1,0 +1,17 @@
+{
+  "name": "Holocron",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+  },
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "mongodb": "^3.0.0-rc0"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.2",
+    "tslint": "^5.8.0",
+    "@types/node": "^8.0.55",
+    "@types/mongodb": "^2.2.16"
+  }
+}
