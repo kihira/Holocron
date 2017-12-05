@@ -5,4 +5,10 @@ const client = new discord_js_1.Client();
 client.on("ready", () => {
     console.log("Ready!");
 });
-client.login("Mzg3Njc0OTgwMDEzNTcyMDk3.DQif1Q.dXSar0OTWb2j4FkP3DEljMf0Peg");
+client.on("message", (message) => {
+    console.log(message);
+    if (message.content === "ping") {
+        message.reply("pong!");
+    }
+});
+client.login(process.env.API_TOKEN || "");
