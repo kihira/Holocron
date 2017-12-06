@@ -18,5 +18,3 @@ node_modules/
 .env
 # Ignore built files
 *.js
-
-
