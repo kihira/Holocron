@@ -1,7 +1,10 @@
-import {Client} from "discord.js";
+import {Client, Collection} from "discord.js";
 import * as dotenv from "dotenv";
 import {Db, MongoClient} from "mongodb";
+import {Command} from "./commands/command";
+import {Talent} from "./commands/talent";
 
+const commands = new Collection<string, Command>();
 const client = new Client();
 let mongo: Db;
 
@@ -30,10 +33,18 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
-    console.log(message);
-    if (message.content === "ping") {
-        message.reply("pong!");
+    if (!message.content.startsWith("!")) return;
+
+    const split = message.content.split(" ");
+    const cmd = commands.get(split[0].slice(1));
+    if (cmd === undefined) {
+        message.reply(`Unknown command \`${split[0].slice(1)}\``);
+        return;
     }
+    cmd.run(message);
 });
+
+// Register commands
+commands.set("talent", new Talent("talent"));
 
 Promise.all([connectMongo(), connectDiscord()]);
