@@ -6,5 +6,5 @@ export abstract class Command {
     constructor(name: string) {
         this.name = name;
     }
-    public abstract run(message: Message): void;
+    public abstract async run(message: Message): Promise<void>;
 }
