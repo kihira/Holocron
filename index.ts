@@ -1,10 +1,10 @@
 import {Client, Collection, Guild, GuildMember, Message} from "discord.js";
 import * as dotenv from "dotenv";
-import {Command} from "./commands/command";
-import {Commands} from "./commands/commands";
-import {Talent} from "./commands/talent";
-import {Mongo} from "./db";
-import {Settings} from "./settings";
+import {Command} from "./src/commands/command";
+import {Commands} from "./src/commands/commands";
+import {Talent} from "./src/commands/talent";
+import {Mongo} from "./src/db";
+import {Settings} from "./src/settings";
 
 const commands = new Collection<string, Command>();
 const client = new Client();
