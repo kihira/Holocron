@@ -1,4 +1,4 @@
-import {Message} from "discord.js";
+import {Message, RichEmbedOptions} from "discord.js";
 import {Mongo} from "../db";
 import {escapeRegex} from "../util";
 import {Command} from "./command";
@@ -12,7 +12,27 @@ export class Talent extends Command {
                 await message.reply("No talent found");
             }
             else {
-                await message.reply("Talent found!");
+                const embed: RichEmbedOptions = {
+                    author: {
+                        icon_url: message.member.user.avatarURL,
+                        name: message.member.displayName,
+                    },
+                    description: data.description || data.short,
+                    fields: [
+                        {
+                            name: "Ranked",
+                            value: data.ranked ? "True" : "False",
+                        },
+                        {
+                            name: "Force",
+                            value: data.force ? "True" : "False",
+                        },
+                    ],
+                };
+                if (process.env.DATA_URL !== undefined) {
+                    embed.url = process.env.DATA_URL + "/talents/" + data._id;
+                }
+                await message.channel.sendEmbed(embed);
             }
             console.log(data);
         }
