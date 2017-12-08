@@ -9,6 +9,14 @@ import {Settings} from "./settings";
 const commands = new Collection<string, Command>();
 const client = new Client();
 
+async function connectDiscord() {
+    try {
+        await client.login(process.env.API_TOKEN || "");
+    } catch {
+        console.error("Failed to login to Discord");
+    }
+}
+
 const init = async () => {
     dotenv.config();
 
@@ -51,10 +59,4 @@ const init = async () => {
     await Promise.all([Mongo.connect(), connectDiscord()]);
 };
 
-async function connectDiscord() {
-    try {
-        await client.login(process.env.API_TOKEN || "");
-    } catch {
-        console.error("Failed to login to Discord");
-    }
-}
+init();
