@@ -8,34 +8,34 @@ export class Talent extends Command {
         if (message.content.length > 7) {
             const talent = escapeRegex(nameToId(message.content.substr(8))); // todo substr needs support for alias
             const data = await Mongo.Data.collection("talents").findOne({_id: {$regex: talent, $options: "i"}});
+
             if (data == null) {
                 await message.reply("No talent found");
+                return;
             }
-            else {
-                const embed: RichEmbedOptions = {
-                    author: {
-                        icon_url: message.member.user.avatarURL,
-                        name: message.member.displayName,
+
+            const embed: RichEmbedOptions = {
+                author: {
+                    icon_url: message.member.user.avatarURL,
+                    name: message.member.displayName,
+                },
+                description: data.description || data.short,
+                fields: [
+                    {
+                        name: "Ranked",
+                        value: data.ranked ? "True" : "False",
                     },
-                    description: data.description || data.short,
-                    fields: [
-                        {
-                            name: "Ranked",
-                            value: data.ranked ? "True" : "False",
-                        },
-                        {
-                            name: "Force",
-                            value: data.force ? "True" : "False",
-                        },
-                    ],
-                    title: idToName(data._id),
-                };
-                if (process.env.DATA_URL !== undefined) {
-                    embed.url = process.env.DATA_URL + "/talents/" + data._id;
-                }
-                await message.channel.sendEmbed(embed);
+                    {
+                        name: "Force",
+                        value: data.force ? "True" : "False",
+                    },
+                ],
+                title: idToName(data._id),
+            };
+            if (process.env.DATA_URL !== undefined) {
+                embed.url = process.env.DATA_URL + "/talents/" + data._id;
             }
-            console.log(data);
+            await message.channel.sendEmbed(embed);
         }
     }
 }
