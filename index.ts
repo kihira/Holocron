@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import {Command} from "./commands/command";
 import {Talent} from "./commands/talent";
 import {Mongo} from "./db";
+import {Settings} from "./settings";
 
 const commands = new Collection<string, Command>();
 const client = new Client();
@@ -35,14 +36,13 @@ client.on("message", async (message: Message) => {
 });
 
 client.on("guildCreate", async (guild: Guild) => {
-    const userBotRatioThreshold = 10; // todo move to a settings
     let bots = 0;
     let users = 0;
     guild.members.forEach((member: GuildMember) => {
         if (member.user.bot) bots++;
         else users++;
     });
-    if (users / bots > userBotRatioThreshold) {
+    if (users / bots > Settings.userBotRatioThreshold) {
         await guild.leave();
         // todo blacklist guild?
         console.log(`Left Guild (${guild.name}) due to high user/bot ratio (${users / bots})`);
