@@ -1,4 +1,5 @@
 import {Db, MongoClient} from "mongodb";
+import {logger} from "./logger";
 
 export class Mongo {
     public static Data: Db;
@@ -7,12 +8,12 @@ export class Mongo {
     public static async connect() {
         try {
             this.client = await MongoClient.connect(process.env.MONGO_CONN || "mongodb://localhost:27017");
-            console.log("Connected to Mongo");
+            logger.info("Connected to Mongo");
 
             this.Data = this.client.db(process.env.DB_DATA || "data");
             this.Settings = this.client.db(process.env.DB_SETTINGS || "settings");
         } catch {
-            console.error("Failed to connect to Mongo");
+            logger.error("Failed to connect to Mongo");
         }
     }
 
