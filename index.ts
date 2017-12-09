@@ -1,12 +1,10 @@
-import {Client, Collection, Guild, GuildMember, Message} from "discord.js";
+import {Client, Guild, GuildMember, Message} from "discord.js";
 import * as dotenv from "dotenv";
-import {Command} from "./src/commands/command";
 import {Commands} from "./src/commands/commands";
 import {Talent} from "./src/commands/talent";
 import {Mongo} from "./src/db";
 import {Settings} from "./src/settings";
 
-const commands = new Collection<string, Command>();
 const client = new Client();
 
 async function connectDiscord() {
@@ -29,7 +27,7 @@ const init = async () => {
         if (!message.content.startsWith("!")) return;
 
         const split = message.content.split(" ");
-        const cmd = commands.get(split[0].slice(1));
+        const cmd = Commands.get(split[0].slice(1));
         if (cmd === undefined) {
             await message.reply(`Unknown command \`${split[0].slice(1)}\``);
             return;
@@ -50,6 +48,12 @@ const init = async () => {
             console.log(`Left Guild (${guild.name}) due to high user/bot ratio (${users / bots})`);
         }
         console.log(`Joined Guild (${guild.name})`);
+    });
+
+    // Called for actually being removed from being a guild
+    client.on("guildDelete", async (guild: Guild) => {
+        console.log(`Removed from guild (${guild.name})`);
+        // todo delete settings
     });
 
     // Register commands
