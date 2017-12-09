@@ -1,10 +1,9 @@
 import {Client, Guild, GuildMember, Message} from "discord.js";
 import * as dotenv from "dotenv";
-import {Commands} from "./src/commands/commands";
-import {Talent} from "./src/commands/talent";
+import {Commands} from "./src/commands";
 import {Mongo} from "./src/db";
-import {Settings} from "./src/settings";
 import {logger} from "./src/logger";
+import {Settings} from "./src/settings";
 
 const client = new Client();
 
@@ -59,7 +58,7 @@ const init = async () => {
     });
 
     // Register commands
-    Commands.register(new Talent("talent"));
+    await Commands.loadAllCommands();
 
     // Begin connect
     await Promise.all([Mongo.connect(), connectDiscord()]);

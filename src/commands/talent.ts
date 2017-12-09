@@ -1,8 +1,8 @@
-import {ColorResolvable, Message, RichEmbed} from "discord.js";
+import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
+import {Command} from "../command";
 import {Mongo} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
-import {Command} from "./command";
 
 interface ITalent {
     _id: string;
@@ -14,7 +14,10 @@ interface ITalent {
     activation: boolean | {Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean};
 }
 
-export class Talent extends Command {
+export default class Talent extends Command {
+    constructor() {
+        super("talent");
+    }
     public async run(message: Message): Promise<void> {
         if (message.content.length > 7) {
             const talent = escapeRegex(nameToId(message.content.substr(8))); // todo substr needs support for alias
