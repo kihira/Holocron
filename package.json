@@ -11,13 +11,15 @@
     "dotenv": "^4.0.0",
     "erlpack": "github:hammerandchisel/erlpack",
     "mongodb": "^2.2.14",
-    "uws": "^0.14.5"
+    "uws": "^0.14.5",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "typescript": "^2.6.2",
     "tslint": "^5.8.0",
     "@types/dotenv": "^4.0.2",
     "@types/node": "^8.0.55",
-    "@types/mongodb": "^2.2.16"
+    "@types/mongodb": "^2.2.16",
+    "@types/winston": "^2.3.7"
   }
 }

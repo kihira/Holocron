@@ -4,6 +4,7 @@ import {Commands} from "./src/commands/commands";
 import {Talent} from "./src/commands/talent";
 import {Mongo} from "./src/db";
 import {Settings} from "./src/settings";
+import {logger} from "./src/logger";
 
 const client = new Client();
 
@@ -11,7 +12,7 @@ async function connectDiscord() {
     try {
         await client.login(process.env.API_TOKEN || "");
     } catch {
-        console.error("Failed to login to Discord");
+        logger.error("Failed to login to Discord");
     }
 }
 
@@ -20,7 +21,7 @@ const init = async () => {
 
     // Register handlers
     client.on("ready", async () => {
-        console.log("Ready!");
+        logger.info("Connected to Discord");
     });
 
     client.on("message", async (message: Message) => {
@@ -45,14 +46,14 @@ const init = async () => {
         if (users / bots > Settings.userBotRatioThreshold) {
             await guild.leave();
             // todo blacklist guild?
-            console.log(`Left Guild (${guild.name}) due to high user/bot ratio (${users / bots})`);
+            logger.verbose(`Left Guild (${guild.name}) due to high user/bot ratio (${users / bots})`);
         }
-        console.log(`Joined Guild (${guild.name})`);
+        logger.verbose(`Joined Guild (${guild.name})`);
     });
 
     // Called for actually being removed from being a guild
     client.on("guildDelete", async (guild: Guild) => {
-        console.log(`Removed from guild (${guild.name})`);
+        logger.verbose(`Removed from guild (${guild.name})`);
         // todo delete settings
     });
 

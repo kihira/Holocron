@@ -1,4 +1,5 @@
 import {Collection} from "discord.js";
+import {logger} from "../logger";
 import {Command} from "./command";
 
 class CommandRegistry {
@@ -6,12 +7,12 @@ class CommandRegistry {
 
     public register(command: Command) {
         if (this.commands.has(command.name)) {
-            console.error(`Already registered a command with the name ${command.name}`);
+            logger.error(`Already registered a command with the name ${command.name}`);
         }
         if (command.aliases !== undefined && command.aliases.length > 0) {
             command.aliases.forEach((value) => {
                 if (this.commands.has(value)) {
-                    console.error(`Already registered a command with the name/alias ${value}`);
+                    logger.error(`Already registered a command with the name/alias ${value}`);
                     return;
                 }
             });
