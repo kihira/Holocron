@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
-    "strict": true
+    "strict": true,
+    "sourceMap": true
   },
   "exclude": [
     "node_modules"

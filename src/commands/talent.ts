@@ -35,7 +35,7 @@ export class Talent extends Command {
             if (process.env.DATA_URL !== undefined) {
                 embed.url = process.env.DATA_URL + "/talents/" + data._id;
             }
-            await message.channel.sendEmbed(embed);
+            await message.channel.send({embed});
         }
     }
 }
