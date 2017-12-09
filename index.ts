@@ -25,6 +25,7 @@ const init = async () => {
     });
 
     client.on("message", async (message: Message) => {
+        if (message.member.user.bot) return;
         if (!message.content.startsWith("!")) return;
 
         const split = message.content.split(" ");
