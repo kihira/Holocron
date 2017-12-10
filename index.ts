@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import {readdir} from "fs";
 import {promisify} from "util";
 import {Commands} from "./src/commands";
-import {Mongo} from "./src/db";
+import {Database} from "./src/db";
 import {logger} from "./src/logger";
 
 const client = new Client();
@@ -25,9 +25,9 @@ const init = async () => {
     await Commands.loadAllCommands();
 
     // Begin connect
-    await Mongo.connect();
+    await Database.connect();
     try {
-        await client.login(process.env.API_TOKEN || "");
+        // await client.login(process.env.API_TOKEN || "");
     } catch {
         logger.error("Failed to login to Discord");
         process.exit();

@@ -1,7 +1,7 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
 import {Command} from "../command";
-import {Mongo} from "../db";
+import {Database} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
 
 interface ITalent {
@@ -21,7 +21,7 @@ export default class Talent extends Command {
     public async run(message: Message): Promise<void> {
         if (message.content.length > 7) {
             const talent = escapeRegex(nameToId(message.content.substr(8))); // todo substr needs support for alias
-            const data = await Mongo.Data.collection<ITalent>("talents")
+            const data = await Database.Data.collection<ITalent>("talents")
                 .findOne({_id: {$regex: talent, $options: "i"}});
 
             if (data == null) {

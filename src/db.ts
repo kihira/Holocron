@@ -1,11 +1,12 @@
 import {Db, MongoClient} from "mongodb";
 import {logger} from "./logger";
 
-export class Mongo {
-    public static Data: Db;
-    public static Settings: Db;
+class Mongo {
+    public Data: Db;
+    public Settings: Db;
+    private client: Db;
 
-    public static async connect() {
+    public async connect() {
         try {
             this.client = await MongoClient.connect(process.env.MONGO_CONN || "mongodb://localhost:27017");
             logger.info("Connected to Mongo");
@@ -17,6 +18,6 @@ export class Mongo {
             process.exit();
         }
     }
-
-    private static client: Db;
 }
+
+export const Database = new Mongo();
