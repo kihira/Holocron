@@ -1,4 +1,4 @@
-import {Message} from "discord.js";
+import {Client, Message} from "discord.js";
 import {isArray} from "util";
 
 export abstract class Command {
@@ -13,4 +13,5 @@ export abstract class Command {
         else this.name = name;
     }
     public abstract async run(message: Message): Promise<void>;
+    public async init(client: Client): Promise<void> {}
 }

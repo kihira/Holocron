@@ -1,4 +1,4 @@
-import {Collection, Message} from "discord.js";
+import {Client, Collection, Emoji, Message} from "discord.js";
 import * as _ from "lodash";
 import {Command} from "../command";
 import {logger} from "../logger";
@@ -94,6 +94,7 @@ const diceValues = new Collection<string, Die[]>([
         {dark: 1},
     ]],
 ]);
+const symbolEmoji = new Collection<string, Emoji>();
 
 export = class Roll extends Command {
     private diceRegex: RegExp = /(\d{1,2})([a-z]+)/;
@@ -101,6 +102,30 @@ export = class Roll extends Command {
     constructor() {
         super(["roll", "r"]);
     }
+
+    public async init(client: Client): Promise<void> {
+        if (process.env.EMOJI_GUILD === undefined) {
+            logger.error("Emoji guild not defined, emoji's will not work");
+            return;
+        }
+        const guild = client.guilds.get(process.env.EMOJI_GUILD || "");
+        if (guild === undefined) {
+            logger.error(`Unable to find guild ${process.env.EMOJI_GUILD} for emoji's`);
+            return;
+        }
+        const symbolsIds: {[key: string]: string} = {success: "id", failure: "id"}; // todo actual ids and move to config
+        for (const key in symbolsIds) {
+            if (symbolsIds.hasOwnProperty(key)) {
+                const emoji = guild.emojis.get(symbolsIds[key]);
+                if (emoji === undefined) {
+                    logger.error(`Unable to find emoji ${symbolsIds[key]} for ${key}`);
+                    return;
+                }
+                symbolEmoji.set(key, emoji);
+            }
+        }
+    }
+
     public async run(message: Message): Promise<void> {
         if (message.author.id !== process.env.ADMIN) return;
 
