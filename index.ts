@@ -8,14 +8,6 @@ import {logger} from "./src/logger";
 
 const client = new Client();
 
-async function connectDiscord() {
-    try {
-        await client.login(process.env.API_TOKEN || "");
-    } catch {
-        logger.error("Failed to login to Discord");
-    }
-}
-
 const init = async () => {
     dotenv.config();
 
@@ -33,7 +25,16 @@ const init = async () => {
     await Commands.loadAllCommands();
 
     // Begin connect
-    await Promise.all([Mongo.connect(), connectDiscord()]);
+    await Mongo.connect();
+    try {
+        await client.login(process.env.API_TOKEN || "");
+    } catch {
+        logger.error("Failed to login to Discord");
+        process.exit();
+    }
+
+    // Set status
+    await client.user.setPresence({game: {name: "Star Wars RPG"} });
 };
 
 init();

@@ -14,6 +14,7 @@ export class Mongo {
             this.Settings = this.client.db(process.env.DB_SETTINGS || "settings");
         } catch {
             logger.error("Failed to connect to Mongo");
+            process.exit();
         }
     }
 
