@@ -1,9 +1,10 @@
-import {Client, Guild, GuildMember, Message} from "discord.js";
+import {Client} from "discord.js";
 import * as dotenv from "dotenv";
+import {readdir} from "fs";
+import {promisify} from "util";
 import {Commands} from "./src/commands";
 import {Mongo} from "./src/db";
 import {logger} from "./src/logger";
-import {Settings} from "./src/settings";
 
 const client = new Client();
 
@@ -19,42 +20,13 @@ const init = async () => {
     dotenv.config();
 
     // Register handlers
-    client.on("ready", async () => {
-        logger.info("Connected to Discord");
-    });
-
-    client.on("message", async (message: Message) => {
-        if (message.member.user.bot) return;
-        if (!message.content.startsWith("!")) return;
-
-        const split = message.content.split(" ");
-        const cmd = Commands.get(split[0].slice(1));
-        if (cmd === undefined) {
-            await message.reply(`Unknown command \`${split[0].slice(1)}\``);
-            return;
-        }
-        await cmd.run(message);
-    });
-
-    client.on("guildCreate", async (guild: Guild) => {
-        let bots = 0;
-        let users = 0;
-        guild.members.forEach((member: GuildMember) => {
-            if (member.user.bot) bots++;
-            else users++;
-        });
-        if (users / bots > Settings.userBotRatioThreshold) {
-            await guild.leave();
-            // todo blacklist guild?
-            logger.verbose(`Left Guild (${guild.name}) due to high user/bot ratio (${users / bots})`);
-        }
-        logger.verbose(`Joined Guild (${guild.name})`);
-    });
-
-    // Called for actually being removed from being a guild
-    client.on("guildDelete", async (guild: Guild) => {
-        logger.verbose(`Removed from guild (${guild.name})`);
-        // todo delete settings
+    const events = await promisify(readdir)("./src/events/");
+    events.forEach((value) => {
+        if (!value.endsWith(".js")) return;
+        const eventName = value.split(".")[0];
+        const event = require(`./src/events/${value}`);
+        client.on(eventName, event.bind(null));
+        logger.info(`Loaded event ${eventName}`);
     });
 
     // Register commands
