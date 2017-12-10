@@ -144,7 +144,7 @@ export = class Roll extends Command {
                 dice.push({type: match[2], num: parseInt(match[1], 10)});
             }
         }
-        await message.reply(`${dice[0].type} ${dice[0].num}`);
+        await message.reply(message.guild.emojis.find("name", "abilityAA").toString());
     }
 
     private rollDice(dice: string, count: number, results: Results) {
@@ -153,6 +153,35 @@ export = class Roll extends Command {
         for (let i = 0; i < count; i++) {
             const result = Math.floor(Math.random() * values.length);
             _.merge(results, values[result]);
+        }
+    }
+
+    private calcResult(results: Results) {
+        // Calc success/failure
+        if (results.success > results.failure) {
+            results.success -= results.failure;
+            results.failure = 0;
+        }
+        else if (results.failure > results.success) {
+            results.failure -= results.success;
+            results.success = 0;
+        }
+        else {
+            results.failure = 0;
+            results.success = 0;
+        }
+        // Advantage/disadvantage
+        if (results.advantage > results.threat) {
+            results.advantage -= results.threat;
+            results.threat = 0;
+        }
+        else if (results.threat > results.advantage) {
+            results.threat -= results.advantage;
+            results.advantage = 0;
+        }
+        else {
+            results.advantage = 0;
+            results.threat = 0;
         }
     }
 };
