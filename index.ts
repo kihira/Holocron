@@ -27,7 +27,7 @@ const init = async () => {
     // Begin connect
     await Database.connect();
     try {
-        // await client.login(process.env.API_TOKEN || "");
+        await client.login(process.env.API_TOKEN || "");
     } catch {
         logger.error("Failed to login to Discord");
         process.exit();

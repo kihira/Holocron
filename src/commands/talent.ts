@@ -14,7 +14,7 @@ interface ITalent {
     activation: boolean | {Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean};
 }
 
-export default class Talent extends Command {
+export = class Talent extends Command {
     constructor() {
         super("talent");
     }
@@ -60,4 +60,4 @@ export default class Talent extends Command {
             await message.channel.send({embed});
         }
     }
-}
+};

@@ -2,7 +2,7 @@ import {Message} from "discord.js";
 import {Command} from "../command";
 import {Commands} from "../commands";
 
-export default class Reload extends Command {
+export = class Reload extends Command {
     constructor() {
         super("reload");
     }
@@ -22,4 +22,4 @@ export default class Reload extends Command {
         Commands.reloadCommand(cmd);
         await message.reply(`The command ${split[0]} has been reloaded`);
     }
-}
+};

@@ -51,7 +51,7 @@ class CommandRegistry {
         try {
             const cmd = require(`./commands/${name}`);
             logger.info(`Loading command: ${name}`);
-            this.register(new cmd.default());
+            this.register(new cmd());
         } catch (e) {
             logger.error(`Failed to load command ${name}: ${e}`);
         }
