@@ -136,7 +136,7 @@ export = class Roll extends Command {
         }
         args = args.splice(1);
 
-        const results: Die[] = [];
+        const diceResults: Die[] = [];
 
         for (const arg of args) {
             const match = arg.match(this.diceRegex);
@@ -145,12 +145,13 @@ export = class Roll extends Command {
                     await message.reply("Invalid dice roll");
                     return;
                 }
-                this.rollDice(match[2], parseInt(match[1], 10), results);
+                this.rollDice(match[2], parseInt(match[1], 10), diceResults);
             }
         }
+        const results: Die = this.calcResult(diceResults);
         await message.reply(message.guild.emojis.find("name", "abilityAA").toString());
 
-        logger.verbose(`Roll Results`, {dice: results});
+        logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }
 
     private rollDice(dice: string, count: number, results: Die[]) {
