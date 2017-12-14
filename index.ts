@@ -22,7 +22,10 @@ const init = async () => {
     });
 
     // Register commands
-    await Commands.loadAllCommands();
+    client.on("ready", async () => {
+        logger.info("Connected to Discord");
+        await Commands.init(client);
+    });
 
     // Begin connect
     await Database.connect();

@@ -1,4 +1,4 @@
-import {Collection} from "discord.js";
+import {Client, Collection} from "discord.js";
 import {readdir} from "fs";
 import {promisify} from "util";
 import {Command} from "./command";
@@ -6,6 +6,7 @@ import {logger} from "./logger";
 
 class CommandRegistry {
     private commands: Collection<string, Command> = new Collection<string, Command>();
+    private client: Client;
 
     public register(command: Command) {
         if (this.commands.has(command.name)) {
@@ -33,25 +34,31 @@ class CommandRegistry {
         return this.commands.get(name);
     }
 
+    public async init(client: Client) {
+        this.client = client;
+        await this.loadAllCommands();
+    }
+
     public async loadAllCommands() {
         const list = await promisify(readdir)("./src/commands/");
-        list.forEach((value) => {
+        list.forEach(async (value) => {
             if (value.endsWith(".js")) {
-                this.loadCommand(value);
+                await this.loadCommand(value);
             }
         });
     }
 
-    public reloadCommand(command: Command) {
+    public async reloadCommand(command: Command) {
         this.unloadCommand(command);
-        this.loadCommand(command.name);
+        await this.loadCommand(command.name);
     }
 
-    private loadCommand(name: string) {
+    private async loadCommand(name: string) {
         try {
-            const cmd = require(`./commands/${name}`);
             logger.info(`Loading command: ${name}`);
-            this.register(new cmd());
+            const cmd: Command = new (require(`./commands/${name}`))();
+            this.register(cmd);
+            await cmd.init(this.client);
         } catch (e) {
             logger.error(`Failed to load command ${name}: ${e}`);
         }
