@@ -29,29 +29,29 @@ const diceValues = new Collection<string, DieSide[]>([
         {emoji: "abilitySA", success: 1, advantage: 1},
         {emoji: "abilityA", advantage: 1},
     ]],
-    ["proficency", [
-        {emoji: "profBlank"},
-        {emoji: "profS", success: 1},
-        {emoji: "profAA", advantage: 2},
-        {emoji: "profSA", success: 1, advantage: 1},
-        {emoji: "profSA", success: 1, advantage: 1},
-        {emoji: "profSS", success: 2},
-        {emoji: "profSA", success: 1, advantage: 1},
-        {emoji: "profA", advantage: 1},
-        {emoji: "profSS", success: 2},
-        {emoji: "profS", success: 1},
-        {emoji: "profAA", advantage: 2},
-        {emoji: "profT", triumph: 1},
+    ["proficiency", [
+        {emoji: "proficiencyBlank"},
+        {emoji: "proficiencyS", success: 1},
+        {emoji: "proficiencyAA", advantage: 2},
+        {emoji: "proficiencySA", success: 1, advantage: 1},
+        {emoji: "proficiencySA", success: 1, advantage: 1},
+        {emoji: "proficiencySS", success: 2},
+        {emoji: "proficiencySA", success: 1, advantage: 1},
+        {emoji: "proficiencyA", advantage: 1},
+        {emoji: "proficiencySS", success: 2},
+        {emoji: "proficiencyS", success: 1},
+        {emoji: "proficiencyAA", advantage: 2},
+        {emoji: "proficiencyT", triumph: 1},
     ]],
     ["difficulty", [
-        {emoji: "diffBlank"},
-        {emoji: "diffFT", failure: 1, threat: 1},
-        {emoji: "diffT", threat: 1},
-        {emoji: "diffFF", failure: 2},
-        {emoji: "diffTT", threat: 2},
-        {emoji: "diffT", threat: 1},
-        {emoji: "diffF", failure: 1},
-        {emoji: "diffT", threat: 1},
+        {emoji: "difficultyBlank"},
+        {emoji: "difficultyFT", failure: 1, threat: 1},
+        {emoji: "difficultyT", threat: 1},
+        {emoji: "difficultyFF", failure: 2},
+        {emoji: "difficultyTT", threat: 2},
+        {emoji: "difficultyT", threat: 1},
+        {emoji: "difficultyF", failure: 1},
+        {emoji: "difficultyT", threat: 1},
     ]],
     ["challenge", [
         {emoji: "challengeBlank"},
@@ -118,13 +118,14 @@ export = class Roll extends Command {
             return;
         }
         // Find and load emoji for dice sides
-        diceValues.forEach((diceSides) => {
+        diceValues.forEach((diceSides, key) => {
             diceSides.forEach((value) => {
                 const emoji = guild.emojis.find("name", value.emoji);
-                if (emoji === undefined) {
-                    logger.error(`Unable to find emoji ${value.emoji}`);
+                if (emoji === undefined || emoji === null) {
+                    logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
                 }
                 else {
+                    logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
                     value.emoji = emoji.toString(); // Assign it to something we can use in text
                 }
             });
@@ -132,10 +133,11 @@ export = class Roll extends Command {
 
         symbolEmoji.forEach((value, key) => {
             const emoji = guild.emojis.find("name", value);
-            if (emoji === undefined) {
-                logger.error(`Unable to find emoji ${value}`);
+            if (emoji === undefined || emoji === null) {
+                logger.error(`Unable to find emoji ${value} for ${key}`);
             }
             else {
+                logger.verbose(`Loaded emoji ${value} for ${key}`);
                 symbolEmoji.set(key, emoji.toString()); // Assign it to something we can use in text
             }
         });
