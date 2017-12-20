@@ -98,7 +98,14 @@ const diceValues = new Collection<string, DieSide[]>([
         {emoji: "forceD", dark: 1},
     ]],
 ]);
-const symbolEmoji = new Collection<string, string>([["success", "success"]]);
+const symbolEmoji = new Collection<string, string>([
+    ["success", "success"],
+    ["advantage", "advantage"],
+    ["threat", "threat"],
+    ["failure", "failure"],
+    ["triumph", "triumph"],
+    ["despair", "despair"],
+]);
 
 export = class Roll extends Command {
     private diceRegex: RegExp = /(\d{1,2})([a-z]+)/;
@@ -120,25 +127,29 @@ export = class Roll extends Command {
         // Find and load emoji for dice sides
         diceValues.forEach((diceSides, key) => {
             diceSides.forEach((value) => {
-                const emoji = guild.emojis.find("name", value.emoji);
-                if (emoji === undefined || emoji === null) {
-                    logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
-                }
-                else {
-                    logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
-                    value.emoji = emoji.toString(); // Assign it to something we can use in text
+                if (!value.emoji.startsWith("<") && !value.emoji.endsWith(">")) { // Ignore already loaded emoji
+                    const emoji = guild.emojis.find("name", value.emoji);
+                    if (emoji === undefined || emoji === null) {
+                        logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
+                    }
+                    else {
+                        logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
+                        value.emoji = emoji.toString(); // Assign it to something we can use in text
+                    }
                 }
             });
         });
 
         symbolEmoji.forEach((value, key) => {
-            const emoji = guild.emojis.find("name", value);
-            if (emoji === undefined || emoji === null) {
-                logger.error(`Unable to find emoji ${value} for ${key}`);
-            }
-            else {
-                logger.verbose(`Loaded emoji ${value} for ${key}`);
-                symbolEmoji.set(key, emoji.toString()); // Assign it to something we can use in text
+            if (!value.startsWith("<") && !value.endsWith(">")) { // Ignore already loaded emoji
+                const emoji = guild.emojis.find("name", value);
+                if (emoji === undefined || emoji === null) {
+                    logger.error(`Unable to find emoji ${value} for ${key}`);
+                }
+                else {
+                    logger.verbose(`Loaded emoji ${value} for ${key}`);
+                    symbolEmoji.set(key, emoji.toString()); // Assign it to something we can use in text
+                }
             }
         });
     }
@@ -153,7 +164,7 @@ export = class Roll extends Command {
         }
         args = args.splice(1);
 
-        const diceResults: Values[] = [];
+        const diceResults: DieSide[] = [];
 
         for (const arg of args) {
             const match = arg.match(this.diceRegex);
@@ -166,12 +177,13 @@ export = class Roll extends Command {
             }
         }
         const results: Values = this.calcResult(diceResults);
-        await message.reply(message.guild.emojis.find("name", "abilityAA").toString());
+        await message.reply(diceResults.map((value) => value.emoji).join(""));
+        await message.reply(this.displayResults(results));
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }
 
-    private rollDice(dice: string, count: number, results: Values[]) {
+    private rollDice(dice: string, count: number, results: DieSide[]) {
         const values = diceValues.get(dice);
         if (values === undefined) return;
         for (let i = 0; i < count; i++) {
@@ -181,12 +193,13 @@ export = class Roll extends Command {
         }
     }
 
-    private calcResult(rolls: Values[]): Values {
+    private calcResult(rolls: DieSide[]): Values {
         const results: Values = {};
 
         rolls.forEach((value) => {
             _.merge(results, value);
         });
+        delete (results as any).emoji; // The merge causes emoji to be copied over, delete it
         // Calc success/failure
         if (results.success !== undefined && results.failure !== undefined) {
             if (results.success > results.failure) {
@@ -219,5 +232,15 @@ export = class Roll extends Command {
         }
 
         return results;
+    }
+
+    private displayResults(results: Values): string {
+        let out = "";
+        for (const obj in results) {
+            if (results.hasOwnProperty(obj)) {
+                out += (symbolEmoji.get(obj) as string).repeat(results[obj]);
+            }
+        }
+        return out;
     }
 };
