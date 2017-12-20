@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import {Command} from "../command";
 import {logger} from "../logger";
 
-interface Die {
+interface Values {
     success?: number;
     advantage?: number;
     triumph?: number;
@@ -14,87 +14,91 @@ interface Die {
     dark?: number;
 }
 
-const diceValues = new Collection<string, Die[]>([
+interface DieSide extends Values {
+    emoji: string;
+}
+
+const diceValues = new Collection<string, DieSide[]>([
     ["ability", [
-        {},
-        {advantage: 1},
-        {success: 2},
-        {success: 1},
-        {advantage: 2},
-        {success: 1},
-        {success: 1, advantage: 1},
-        {advantage: 1},
+        {emoji: "abilityBlank"},
+        {emoji: "abilityA", advantage: 1},
+        {emoji: "abilitySS", success: 2},
+        {emoji: "abilityS", success: 1},
+        {emoji: "abilityAA", advantage: 2},
+        {emoji: "abilityS", success: 1},
+        {emoji: "abilitySA", success: 1, advantage: 1},
+        {emoji: "abilityA", advantage: 1},
     ]],
     ["proficency", [
-        {},
-        {success: 1},
-        {advantage: 2},
-        {success: 1, advantage: 1},
-        {success: 1, advantage: 1},
-        {success: 2},
-        {success: 1, advantage: 1},
-        {advantage: 1},
-        {success: 2},
-        {success: 1},
-        {advantage: 2},
-        {triumph: 1},
+        {emoji: "profBlank"},
+        {emoji: "profS", success: 1},
+        {emoji: "profAA", advantage: 2},
+        {emoji: "profSA", success: 1, advantage: 1},
+        {emoji: "profSA", success: 1, advantage: 1},
+        {emoji: "profSS", success: 2},
+        {emoji: "profSA", success: 1, advantage: 1},
+        {emoji: "profA", advantage: 1},
+        {emoji: "profSS", success: 2},
+        {emoji: "profS", success: 1},
+        {emoji: "profAA", advantage: 2},
+        {emoji: "profT", triumph: 1},
     ]],
     ["difficulty", [
-        {},
-        {failure: 1, threat: 1},
-        {threat: 1},
-        {failure: 2},
-        {threat: 2},
-        {threat: 1},
-        {failure: 1},
-        {threat: 1},
+        {emoji: "diffBlank"},
+        {emoji: "diffFT", failure: 1, threat: 1},
+        {emoji: "diffT", threat: 1},
+        {emoji: "diffFF", failure: 2},
+        {emoji: "diffTT", threat: 2},
+        {emoji: "diffT", threat: 1},
+        {emoji: "diffF", failure: 1},
+        {emoji: "diffT", threat: 1},
     ]],
     ["challenge", [
-        {},
-        {failure: 1},
-        {threat: 1},
-        {failure: 2},
-        {failure: 1, threat: 1},
-        {threat: 2},
-        {failure: 1, threat: 1},
-        {failure: 2},
-        {threat: 1},
-        {failure: 1},
-        {threat: 2},
-        {despair: 1},
+        {emoji: "challengeBlank"},
+        {emoji: "challengeF", failure: 1},
+        {emoji: "challengeT", threat: 1},
+        {emoji: "challengeFF", failure: 2},
+        {emoji: "challengeFT", failure: 1, threat: 1},
+        {emoji: "challengeTT", threat: 2},
+        {emoji: "challengeFT", failure: 1, threat: 1},
+        {emoji: "challengeFF", failure: 2},
+        {emoji: "challengeT", threat: 1},
+        {emoji: "challengeF", failure: 1},
+        {emoji: "challengeTT", threat: 2},
+        {emoji: "challengeD", despair: 1},
     ]],
     ["boost", [
-        {},
-        {},
-        {advantage: 1},
-        {success: 1, advantage: 1},
-        {success: 1},
-        {advantage: 2},
+        {emoji: "boostBlank"},
+        {emoji: "boostBlank"},
+        {emoji: "boostA", advantage: 1},
+        {emoji: "boostSA", success: 1, advantage: 1},
+        {emoji: "boostS", success: 1},
+        {emoji: "boostAA", advantage: 2},
     ]],
     ["setback", [
-        {},
-        {},
-        {failure: 1},
-        {failure: 1},
-        {threat: 1},
-        {threat: 1},
+        {emoji: "setbackBlank"},
+        {emoji: "setbackBlank"},
+        {emoji: "setbackF", failure: 1},
+        {emoji: "setbackF", failure: 1},
+        {emoji: "setbackT", threat: 1},
+        {emoji: "setbackT", threat: 1},
     ]],
     ["force", [
-        {light: 2},
-        {light: 2},
-        {dark: 1},
-        {light: 1},
-        {dark: 1},
-        {dark: 1},
-        {dark: 2},
-        {light: 2},
-        {dark: 1},
-        {dark: 1},
-        {light: 1},
-        {dark: 1},
+        {emoji: "forceLL", light: 2},
+        {emoji: "forceLL", light: 2},
+        {emoji: "forceD", dark: 1},
+        {emoji: "forceL", light: 1},
+        {emoji: "forceD", dark: 1},
+        {emoji: "forceD", dark: 1},
+        {emoji: "forceDD", dark: 2},
+        {emoji: "forceLL", light: 2},
+        {emoji: "forceD", dark: 1},
+        {emoji: "forceD", dark: 1},
+        {emoji: "forceL", light: 1},
+        {emoji: "forceD", dark: 1},
     ]],
 ]);
-const symbolEmoji = new Collection<string, Emoji>();
+const symbolEmoji = new Collection<string, string>([["success", "success"]]);
 
 export = class Roll extends Command {
     private diceRegex: RegExp = /(\d{1,2})([a-z]+)/;
@@ -113,17 +117,28 @@ export = class Roll extends Command {
             logger.error(`Unable to find guild ${process.env.EMOJI_GUILD} for emoji's`);
             return;
         }
-        const symbolsIds: {[key: string]: string} = {success: "id", failure: "id"}; // todo actual ids and move to config
-        for (const key in symbolsIds) {
-            if (symbolsIds.hasOwnProperty(key)) {
-                const emoji = guild.emojis.get(symbolsIds[key]);
+        // Find and load emoji for dice sides
+        diceValues.forEach((diceSides) => {
+            diceSides.forEach((value) => {
+                const emoji = guild.emojis.find("name", value.emoji);
                 if (emoji === undefined) {
-                    logger.error(`Unable to find emoji ${symbolsIds[key]} for ${key}`);
-                    return;
+                    logger.error(`Unable to find emoji ${value.emoji}`);
                 }
-                symbolEmoji.set(key, emoji);
+                else {
+                    value.emoji = emoji.toString(); // Assign it to something we can use in text
+                }
+            });
+        });
+
+        symbolEmoji.forEach((value, key) => {
+            const emoji = guild.emojis.find("name", value);
+            if (emoji === undefined) {
+                logger.error(`Unable to find emoji ${value}`);
             }
-        }
+            else {
+                symbolEmoji.set(key, emoji.toString()); // Assign it to something we can use in text
+            }
+        });
     }
 
     public async run(message: Message): Promise<void> {
@@ -136,7 +151,7 @@ export = class Roll extends Command {
         }
         args = args.splice(1);
 
-        const diceResults: Die[] = [];
+        const diceResults: Values[] = [];
 
         for (const arg of args) {
             const match = arg.match(this.diceRegex);
@@ -148,13 +163,13 @@ export = class Roll extends Command {
                 this.rollDice(match[2], parseInt(match[1], 10), diceResults);
             }
         }
-        const results: Die = this.calcResult(diceResults);
+        const results: Values = this.calcResult(diceResults);
         await message.reply(message.guild.emojis.find("name", "abilityAA").toString());
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }
 
-    private rollDice(dice: string, count: number, results: Die[]) {
+    private rollDice(dice: string, count: number, results: Values[]) {
         const values = diceValues.get(dice);
         if (values === undefined) return;
         for (let i = 0; i < count; i++) {
@@ -164,10 +179,10 @@ export = class Roll extends Command {
         }
     }
 
-    private calcResult(dice: Die[]): Die {
-        const results: Die = {};
+    private calcResult(rolls: Values[]): Values {
+        const results: Values = {};
 
-        dice.forEach((value) => {
+        rolls.forEach((value) => {
             _.merge(results, value);
         });
         // Calc success/failure
