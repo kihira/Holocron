@@ -149,13 +149,11 @@ export = class Roll extends Command {
         });
     }
 
-    public async run(message: Message): Promise<void> {
-        let args = message.content.split(" ");
-        if (args.length < 2) {
+    public async run(message: Message, args: string[]): Promise<void> {
+        if (args.length < 1) {
             await message.reply("Please specify dice to roll");
             return;
         }
-        args = args.splice(1);
 
         const diceResults: DieSide[] = [];
 
@@ -177,7 +175,7 @@ export = class Roll extends Command {
         const results: Values = this.calcResult(diceResults);
         const displayResults = this.displayResults(results);
         const embed = new RichEmbed();
-        embed.setAuthor(message.author.username, message.author.avatarURL);
+        embed.setAuthor(message.member.displayName, message.author.avatarURL);
         embed.setColor("DARK_RED");
         embed.addField("Roll", diceResults.map((value) => value.emoji).join(""));
         if (displayResults.length > 0) embed.addField("Results", displayResults);

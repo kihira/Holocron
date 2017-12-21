@@ -6,15 +6,14 @@ export = class Reload extends Command {
     constructor() {
         super("reload");
     }
-    public async run(message: Message): Promise<void> {
+    public async run(message: Message, args: string[]): Promise<void> {
         if (message.author.id !== process.env.ADMIN) return;
 
-        const split = message.content.split(" ");
-        if (split.length < 2) {
+        if (args.length < 1) {
             await message.reply("Please specify a command to reload");
             return;
         }
-        const cmdName = split[1];
+        const cmdName = args[0];
         const cmd = Commands.get(cmdName);
         if (cmd === undefined) {
             await message.reply(`The command with the name/alias \`${cmdName}\` does not exist`);

@@ -18,9 +18,9 @@ export = class Talent extends Command {
     constructor() {
         super("talent");
     }
-    public async run(message: Message): Promise<void> {
+    public async run(message: Message, args: string[]): Promise<void> {
         if (message.content.length > 7) {
-            const talent = escapeRegex(nameToId(message.content.substr(8))); // todo substr needs support for alias
+            const talent = escapeRegex(nameToId(args[0]));
             const data = await Database.Data.collection<ITalent>("talents")
                 .findOne({_id: {$regex: talent, $options: "i"}});
 
@@ -31,7 +31,7 @@ export = class Talent extends Command {
 
             const embed = new RichEmbed();
             embed.setTitle(idToName(data._id));
-            embed.setAuthor(message.member.displayName, message.member.user.avatarURL);
+            embed.setAuthor(message.member.displayName, message.author.avatarURL);
             embed.setDescription(data.description || data.short || "");
             embed.setFooter(data.index.join(", "));
             embed.setColor("DARK_RED");

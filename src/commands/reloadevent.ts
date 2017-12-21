@@ -6,16 +6,15 @@ export = class ReloadEvent extends Command {
     constructor() {
         super("reloadevent");
     }
-    public async run(message: Message): Promise<void> {
+    public async run(message: Message, args: string[]): Promise<void> {
         if (message.author.id !== process.env.ADMIN) return;
 
-        const split = message.content.split(" ");
-        if (split.length < 2) {
+        if (args.length < 1) {
             await message.reply("Please specify an event to reload");
             return;
         }
 
-        const eventName = split[1];
+        const eventName = args[0];
         try {
             delete require.cache[require.resolve(`../events/${eventName}.js`)];
             const event = require(`../events/${eventName}.js`);

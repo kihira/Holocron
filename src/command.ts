@@ -12,6 +12,6 @@ export abstract class Command {
         }
         else this.name = name;
     }
-    public abstract async run(message: Message): Promise<void>;
+    public abstract async run(message: Message, args: string[]): Promise<void>;
     public async init(client: Client): Promise<void> {}
 }
