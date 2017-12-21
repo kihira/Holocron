@@ -1,4 +1,4 @@
-import {Client, Collection, Message} from "discord.js";
+import {Client, Collection, Message, RichEmbed} from "discord.js";
 import * as _ from "lodash";
 import {Command} from "../command";
 import {logger} from "../logger";
@@ -108,7 +108,7 @@ const symbolEmoji = {
 };
 
 export = class Roll extends Command {
-    private diceRegex: RegExp = /(\d{1,2})([a-z]+)/;
+    private diceRegex: RegExp = /(\d{0,2})([a-z]+)/;
 
     constructor() {
         super(["roll", "r"]);
@@ -171,32 +171,30 @@ export = class Roll extends Command {
                     await message.reply("Invalid dice roll");
                     return;
                 }
-                this.rollDice(match[2], parseInt(match[1], 10), diceResults);
+                const dice = diceValues.get(match[2]);
+                if (dice === undefined) {
+                    await message.reply(`Invalid dice \`${match[2]}\``);
+                    return;
+                }
+                this.rollDice(dice, _.defaultTo(parseInt(match[1], 10), 1), diceResults);
             }
         }
         const results: Values = this.calcResult(diceResults);
-        await message.channel.send({embed: {
-                fields: [
-                    {
-                        name: "Roll",
-                        value: diceResults.map((value) => value.emoji).join(""),
-                    },
-                    {
-                        name: "Results",
-                        value: this.displayResults(results),
-                    }],
-            }});
+        const displayResults = this.displayResults(results);
+        const embed = new RichEmbed();
+        embed.setAuthor(message.author.username, message.author.avatarURL);
+        embed.setColor("DARK_RED");
+        embed.addField("Roll", diceResults.map((value) => value.emoji).join(""));
+        if (displayResults.length > 0) embed.addField("Results", displayResults);
+        await message.channel.send(embed);
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }
 
-    private rollDice(dice: string, count: number, results: DieSide[]) {
-        const values = diceValues.get(dice);
-        if (values === undefined) return;
+    private rollDice(dice: DieSide[], count: number, results: DieSide[]) {
         for (let i = 0; i < count; i++) {
-            const result = Math.floor(Math.random() * values.length);
-            // _.merge(results, values[result]);
-            results.push(values[result]);
+            const result = Math.floor(Math.random() * dice.length);
+            results.push(dice[result]);
         }
     }
 
