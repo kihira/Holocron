@@ -19,9 +19,9 @@
     "typescript": "^2.6.2",
     "tslint": "^5.8.0",
     "@types/dotenv": "^4.0.2",
-    "@types/node": "^8.5.1",
-    "@types/lodash": "^4.14.89",
-    "@types/mongodb": "^2.2.17",
+    "@types/node": "^8.5.2",
+    "@types/lodash": "^4.14.91",
+    "@types/mongodb": "^2.2.18",
     "@types/winston": "^2.3.7"
   }
 }
