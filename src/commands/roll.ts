@@ -155,8 +155,6 @@ export = class Roll extends Command {
     }
 
     public async run(message: Message): Promise<void> {
-        if (message.author.id !== process.env.ADMIN) return;
-
         let args = message.content.split(" ");
         if (args.length < 2) {
             await message.reply("Please specify dice to roll");
@@ -177,8 +175,17 @@ export = class Roll extends Command {
             }
         }
         const results: Values = this.calcResult(diceResults);
-        await message.reply(diceResults.map((value) => value.emoji).join(""));
-        await message.reply(this.displayResults(results));
+        await message.channel.send({embed: {
+                fields: [
+                    {
+                        name: "Roll",
+                        value: diceResults.map((value) => value.emoji).join(""),
+                    },
+                    {
+                        name: "Results",
+                        value: this.displayResults(results),
+                    }],
+            }});
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }

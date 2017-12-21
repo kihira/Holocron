@@ -20,7 +20,7 @@ export = class Reload extends Command {
             await message.reply(`The command with the name/alias \`${cmdName}\` does not exist`);
             return;
         }
-        Commands.reloadCommand(cmd);
+        await Commands.reloadCommand(cmd);
         await message.reply(`The command \`${cmdName}\` has been reloaded`);
     }
 };
