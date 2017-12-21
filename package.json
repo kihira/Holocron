@@ -10,7 +10,7 @@
     "discord.js": "^11.2.1",
     "dotenv": "^4.0.0",
     "erlpack": "github:hammerandchisel/erlpack",
-    "lodash.merge": "^4.6.0",
+    "lodash": "^4.6.0",
     "mongodb": "^2.2.14",
     "uws": "^0.14.5",
     "winston": "^2.4.0"

@@ -1,4 +1,4 @@
-import {Client, Collection, Emoji, Message} from "discord.js";
+import {Client, Collection, Message} from "discord.js";
 import * as _ from "lodash";
 import {Command} from "../command";
 import {logger} from "../logger";
@@ -98,14 +98,14 @@ const diceValues = new Collection<string, DieSide[]>([
         {emoji: "forceD", dark: 1},
     ]],
 ]);
-const symbolEmoji = new Collection<string, string>([
-    ["success", "success"],
-    ["advantage", "advantage"],
-    ["threat", "threat"],
-    ["failure", "failure"],
-    ["triumph", "triumph"],
-    ["despair", "despair"],
-]);
+const symbolEmoji = {
+    advantage: "advantage",
+    despair: "despair",
+    failure: "failure",
+    success: "success",
+    threat: "threat",
+    triumph: "triumph",
+};
 
 export = class Roll extends Command {
     private diceRegex: RegExp = /(\d{1,2})([a-z]+)/;
@@ -140,7 +140,7 @@ export = class Roll extends Command {
             });
         });
 
-        symbolEmoji.forEach((value, key) => {
+        _.forIn(symbolEmoji, (value, key) => {
             if (!value.startsWith("<") && !value.endsWith(">")) { // Ignore already loaded emoji
                 const emoji = guild.emojis.find("name", value);
                 if (emoji === undefined || emoji === null) {
@@ -148,7 +148,7 @@ export = class Roll extends Command {
                 }
                 else {
                     logger.verbose(`Loaded emoji ${value} for ${key}`);
-                    symbolEmoji.set(key, emoji.toString()); // Assign it to something we can use in text
+                    (symbolEmoji as any)[key] = emoji.toString(); // Assign it to something we can use in text
                 }
             }
         });
@@ -197,9 +197,12 @@ export = class Roll extends Command {
         const results: Values = {};
 
         rolls.forEach((value) => {
-            _.merge(results, value);
+            _.mergeWith(results, value, (objValue, srcValue) => {
+                return _.defaultTo(objValue, 0) + srcValue;
+            });
         });
-        delete (results as any).emoji; // The merge causes emoji to be copied over, delete it
+        delete (results as DieSide).emoji; // The merge causes emoji to be copied over, delete it
+
         // Calc success/failure
         if (results.success !== undefined && results.failure !== undefined) {
             if (results.success > results.failure) {
@@ -236,11 +239,9 @@ export = class Roll extends Command {
 
     private displayResults(results: Values): string {
         let out = "";
-        for (const obj in results) {
-            if (results.hasOwnProperty(obj)) {
-                out += (symbolEmoji.get(obj) as string).repeat(results[obj]);
-            }
-        }
+        _.forIn(results, (value, key) => {
+            out += (symbolEmoji as any)[key].repeat(_.defaultTo(value, 0));
+        });
         return out;
     }
 };
