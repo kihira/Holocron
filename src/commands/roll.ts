@@ -18,97 +18,96 @@ interface DieSide extends Values {
     emoji: string;
 }
 
-const diceValues = new Collection<string, DieSide[]>([
-    ["ability", [
-        {emoji: "abilityBlank"},
-        {emoji: "abilityA", advantage: 1},
-        {emoji: "abilitySS", success: 2},
-        {emoji: "abilityS", success: 1},
-        {emoji: "abilityAA", advantage: 2},
-        {emoji: "abilityS", success: 1},
-        {emoji: "abilitySA", success: 1, advantage: 1},
-        {emoji: "abilityA", advantage: 1},
-    ]],
-    ["proficiency", [
-        {emoji: "proficiencyBlank"},
-        {emoji: "proficiencyS", success: 1},
-        {emoji: "proficiencyAA", advantage: 2},
-        {emoji: "proficiencySA", success: 1, advantage: 1},
-        {emoji: "proficiencySA", success: 1, advantage: 1},
-        {emoji: "proficiencySS", success: 2},
-        {emoji: "proficiencySA", success: 1, advantage: 1},
-        {emoji: "proficiencyA", advantage: 1},
-        {emoji: "proficiencySS", success: 2},
-        {emoji: "proficiencyS", success: 1},
-        {emoji: "proficiencyAA", advantage: 2},
-        {emoji: "proficiencyT", triumph: 1},
-    ]],
-    ["difficulty", [
-        {emoji: "difficultyBlank"},
-        {emoji: "difficultyFT", failure: 1, threat: 1},
-        {emoji: "difficultyT", threat: 1},
-        {emoji: "difficultyFF", failure: 2},
-        {emoji: "difficultyTT", threat: 2},
-        {emoji: "difficultyT", threat: 1},
-        {emoji: "difficultyF", failure: 1},
-        {emoji: "difficultyT", threat: 1},
-    ]],
-    ["challenge", [
-        {emoji: "challengeBlank"},
-        {emoji: "challengeF", failure: 1},
-        {emoji: "challengeT", threat: 1},
-        {emoji: "challengeFF", failure: 2},
-        {emoji: "challengeFT", failure: 1, threat: 1},
-        {emoji: "challengeTT", threat: 2},
-        {emoji: "challengeFT", failure: 1, threat: 1},
-        {emoji: "challengeFF", failure: 2},
-        {emoji: "challengeT", threat: 1},
-        {emoji: "challengeF", failure: 1},
-        {emoji: "challengeTT", threat: 2},
-        {emoji: "challengeD", despair: 1},
-    ]],
-    ["boost", [
-        {emoji: "boostBlank"},
-        {emoji: "boostBlank"},
-        {emoji: "boostA", advantage: 1},
-        {emoji: "boostSA", success: 1, advantage: 1},
-        {emoji: "boostS", success: 1},
-        {emoji: "boostAA", advantage: 2},
-    ]],
-    ["setback", [
-        {emoji: "setbackBlank"},
-        {emoji: "setbackBlank"},
-        {emoji: "setbackF", failure: 1},
-        {emoji: "setbackF", failure: 1},
-        {emoji: "setbackT", threat: 1},
-        {emoji: "setbackT", threat: 1},
-    ]],
-    ["force", [
-        {emoji: "forceLL", light: 2},
-        {emoji: "forceLL", light: 2},
-        {emoji: "forceD", dark: 1},
-        {emoji: "forceL", light: 1},
-        {emoji: "forceD", dark: 1},
-        {emoji: "forceD", dark: 1},
-        {emoji: "forceDD", dark: 2},
-        {emoji: "forceLL", light: 2},
-        {emoji: "forceD", dark: 1},
-        {emoji: "forceD", dark: 1},
-        {emoji: "forceL", light: 1},
-        {emoji: "forceD", dark: 1},
-    ]],
-]);
-const symbolEmoji = {
-    advantage: "advantage",
-    despair: "despair",
-    failure: "failure",
-    success: "success",
-    threat: "threat",
-    triumph: "triumph",
-};
-
 export = class Roll extends Command {
     private diceRegex: RegExp = /(\d{0,2})([a-z]+)/;
+    private diceValues = new Collection<string, DieSide[]>([
+        ["ability", [
+            {emoji: "abilityBlank"},
+            {emoji: "abilityA", advantage: 1},
+            {emoji: "abilitySS", success: 2},
+            {emoji: "abilityS", success: 1},
+            {emoji: "abilityAA", advantage: 2},
+            {emoji: "abilityS", success: 1},
+            {emoji: "abilitySA", success: 1, advantage: 1},
+            {emoji: "abilityA", advantage: 1},
+        ]],
+        ["proficiency", [
+            {emoji: "proficiencyBlank"},
+            {emoji: "proficiencyS", success: 1},
+            {emoji: "proficiencyAA", advantage: 2},
+            {emoji: "proficiencySA", success: 1, advantage: 1},
+            {emoji: "proficiencySA", success: 1, advantage: 1},
+            {emoji: "proficiencySS", success: 2},
+            {emoji: "proficiencySA", success: 1, advantage: 1},
+            {emoji: "proficiencyA", advantage: 1},
+            {emoji: "proficiencySS", success: 2},
+            {emoji: "proficiencyS", success: 1},
+            {emoji: "proficiencyAA", advantage: 2},
+            {emoji: "proficiencyT", triumph: 1},
+        ]],
+        ["difficulty", [
+            {emoji: "difficultyBlank"},
+            {emoji: "difficultyFT", failure: 1, threat: 1},
+            {emoji: "difficultyT", threat: 1},
+            {emoji: "difficultyFF", failure: 2},
+            {emoji: "difficultyTT", threat: 2},
+            {emoji: "difficultyT", threat: 1},
+            {emoji: "difficultyF", failure: 1},
+            {emoji: "difficultyT", threat: 1},
+        ]],
+        ["challenge", [
+            {emoji: "challengeBlank"},
+            {emoji: "challengeF", failure: 1},
+            {emoji: "challengeT", threat: 1},
+            {emoji: "challengeFF", failure: 2},
+            {emoji: "challengeFT", failure: 1, threat: 1},
+            {emoji: "challengeTT", threat: 2},
+            {emoji: "challengeFT", failure: 1, threat: 1},
+            {emoji: "challengeFF", failure: 2},
+            {emoji: "challengeT", threat: 1},
+            {emoji: "challengeF", failure: 1},
+            {emoji: "challengeTT", threat: 2},
+            {emoji: "challengeD", despair: 1},
+        ]],
+        ["boost", [
+            {emoji: "boostBlank"},
+            {emoji: "boostBlank"},
+            {emoji: "boostA", advantage: 1},
+            {emoji: "boostSA", success: 1, advantage: 1},
+            {emoji: "boostS", success: 1},
+            {emoji: "boostAA", advantage: 2},
+        ]],
+        ["setback", [
+            {emoji: "setbackBlank"},
+            {emoji: "setbackBlank"},
+            {emoji: "setbackF", failure: 1},
+            {emoji: "setbackF", failure: 1},
+            {emoji: "setbackT", threat: 1},
+            {emoji: "setbackT", threat: 1},
+        ]],
+        ["force", [
+            {emoji: "forceLL", light: 2},
+            {emoji: "forceLL", light: 2},
+            {emoji: "forceD", dark: 1},
+            {emoji: "forceL", light: 1},
+            {emoji: "forceD", dark: 1},
+            {emoji: "forceD", dark: 1},
+            {emoji: "forceDD", dark: 2},
+            {emoji: "forceLL", light: 2},
+            {emoji: "forceD", dark: 1},
+            {emoji: "forceD", dark: 1},
+            {emoji: "forceL", light: 1},
+            {emoji: "forceD", dark: 1},
+        ]],
+    ]);
+    private symbolEmoji = {
+        advantage: "advantage",
+        despair: "despair",
+        failure: "failure",
+        success: "success",
+        threat: "threat",
+        triumph: "triumph",
+    };
 
     constructor() {
         super(["roll", "r"]);
@@ -125,31 +124,27 @@ export = class Roll extends Command {
             return;
         }
         // Find and load emoji for dice sides
-        diceValues.forEach((diceSides, key) => {
+        this.diceValues.forEach((diceSides, key) => {
             diceSides.forEach((value) => {
-                if (!value.emoji.startsWith("<") && !value.emoji.endsWith(">")) { // Ignore already loaded emoji
-                    const emoji = guild.emojis.find("name", value.emoji);
-                    if (emoji === undefined || emoji === null) {
-                        logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
-                    }
-                    else {
-                        logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
-                        value.emoji = emoji.toString(); // Assign it to something we can use in text
-                    }
+                const emoji = guild.emojis.find("name", value.emoji);
+                if (emoji === undefined || emoji === null) {
+                    logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
+                }
+                else {
+                    logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
+                    value.emoji = emoji.toString(); // Assign it to something we can use in text
                 }
             });
         });
 
-        _.forIn(symbolEmoji, (value, key) => {
-            if (!value.startsWith("<") && !value.endsWith(">")) { // Ignore already loaded emoji
-                const emoji = guild.emojis.find("name", value);
-                if (emoji === undefined || emoji === null) {
-                    logger.error(`Unable to find emoji ${value} for ${key}`);
-                }
-                else {
-                    logger.verbose(`Loaded emoji ${value} for ${key}`);
-                    (symbolEmoji as any)[key] = emoji.toString(); // Assign it to something we can use in text
-                }
+        _.forIn(this.symbolEmoji, (value, key) => {
+            const emoji = guild.emojis.find("name", value);
+            if (emoji === undefined || emoji === null) {
+                logger.error(`Unable to find emoji ${value} for ${key}`);
+            }
+            else {
+                logger.verbose(`Loaded emoji ${value} for ${key}`);
+                (this.symbolEmoji as any)[key] = emoji.toString(); // Assign it to something we can use in text
             }
         });
     }
@@ -171,7 +166,7 @@ export = class Roll extends Command {
                     await message.reply("Invalid dice roll");
                     return;
                 }
-                const dice = diceValues.get(match[2]);
+                const dice = this.diceValues.get(match[2]);
                 if (dice === undefined) {
                     await message.reply(`Invalid dice \`${match[2]}\``);
                     return;
@@ -245,7 +240,7 @@ export = class Roll extends Command {
     private displayResults(results: Values): string {
         let out = "";
         _.forIn(results, (value, key) => {
-            out += (symbolEmoji as any)[key].repeat(_.defaultTo(value, 0));
+            out += (this.symbolEmoji as any)[key].repeat(_.defaultTo(value, 0));
         });
         return out;
     }
