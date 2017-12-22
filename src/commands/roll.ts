@@ -1,7 +1,7 @@
 import {Client, Collection, Message, RichEmbed} from "discord.js";
 import * as _ from "lodash";
-import {Command} from "../command";
 import {logger} from "../logger";
+import {Command} from "./command";
 
 interface Values {
     success?: number;

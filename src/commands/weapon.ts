@@ -1,8 +1,8 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject, isString} from "util";
-import {Command} from "../command";
 import {Database} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
+import {Command} from "./command";
 
 interface IWeapon {
     _id: string;
@@ -57,10 +57,10 @@ export = class Talent extends Command {
                 // tslint:disable-next-line:max-line-length
                 embed.addField("Special", data.special.map((element) => isString(element) ? element : `${element.id} ${element.value}`).join(", "));
             }
-
             if (process.env.DATA_URL !== undefined) {
                 embed.setURL(process.env.DATA_URL + "/weapons/" + data._id);
             }
+
             await message.channel.send(embed);
         }
     }

@@ -20,3 +20,4 @@ node_modules/
 *.js
 *.js.map
 .vscode/
+result.json

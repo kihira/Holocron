@@ -1,8 +1,8 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
-import {Command} from "../command";
 import {Database} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
+import {Command} from "./command";
 
 interface ITalent {
     _id: string;

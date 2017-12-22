@@ -1,7 +1,7 @@
 import {Client, Collection} from "discord.js";
 import {readdir} from "fs";
 import {promisify} from "util";
-import {Command} from "./command";
+import {Command} from "./commands/command";
 import {logger} from "./logger";
 
 class CommandRegistry {
@@ -56,9 +56,12 @@ class CommandRegistry {
     private async loadCommand(name: string) {
         try {
             logger.info(`Loading command: ${name}`);
-            const cmd: Command = new (require(`./commands/${name}`))();
-            this.register(cmd);
-            await cmd.init(this.client);
+            const cmd = require(`./commands/${name}`);
+            if (cmd.prototype instanceof Command) {
+                const obj = new cmd();
+                this.register(obj);
+                await obj.init(this.client);
+            }
         } catch (e) {
             logger.error(`Failed to load command ${name}: ${e}`);
         }

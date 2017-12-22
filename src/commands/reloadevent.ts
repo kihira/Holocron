@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
-import {Command} from "../command";
 import {logger} from "../logger";
+import {Command} from "./command";
 
 export = class ReloadEvent extends Command {
     constructor() {
