@@ -55,7 +55,7 @@ export = class Talent extends Command {
             embed.addField("Hard Points", data.hardpoints, true);
             if (data.special) {
                 // tslint:disable-next-line:max-line-length
-                embed.addField("Special", data.special.map((element) => isString(element) ? element : `${element.id} ${element.value}`).join(", "));
+                embed.addField("Special", data.special.map((element) => isString(element) ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
             }
             if (process.env.DATA_URL !== undefined) {
                 embed.setURL(process.env.DATA_URL + "/weapons/" + data._id);
