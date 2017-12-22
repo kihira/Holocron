@@ -12,6 +12,7 @@ interface IWeapon {
     description?: string;
     encumbrance: number;
     hardpoints: number;
+    image?: string;
     index: string[];
     name: string;
     notes?: string;
@@ -47,7 +48,7 @@ export = class Talent extends Command {
             embed.addField("Category", data.category, true);
             embed.addField("Skill", data.skill, true);
             embed.addBlankField(true);
-            embed.addField("Price", data.price + (data.restricted ? " (R)" : ""), true);
+            embed.addField("Price", data.price.toLocaleString("en-GB") + (data.restricted ? " (R)" : ""), true);
             embed.addField("Rarity", data.rarity, true);
             embed.addField("Encumbrance", data.encumbrance, true);
             embed.addField("Damage", data.damage, true);
