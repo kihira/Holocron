@@ -1,7 +1,7 @@
 import {Client, Collection, Message, RichEmbed} from "discord.js";
 import * as _ from "lodash";
 import {logger} from "../logger";
-import {Command} from "./command";
+import {Argument, Command} from "./command";
 
 interface Values {
     success?: number;
@@ -110,7 +110,7 @@ export = class Roll extends Command {
     };
 
     constructor() {
-        super(["roll", "r"]);
+        super("roll", [new Argument("dice")], "r");
     }
 
     public async init(client: Client): Promise<void> {

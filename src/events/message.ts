@@ -11,5 +11,9 @@ export = async (message: Message) => {
         await message.reply(`Unknown command \`${split[0].slice(1)}\``);
         return;
     }
-    await cmd.run(message, split.slice(1));
+    const args = split.slice(1);
+    if (cmd.arguments.length !== args.length) {
+        await message.reply("Invalid number of arguments"); // todo show help for cmd
+    }
+    else await cmd.run(message, split.slice(1));
 };

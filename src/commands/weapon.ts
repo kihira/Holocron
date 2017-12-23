@@ -2,7 +2,7 @@ import {Message, RichEmbed} from "discord.js";
 import {isObject, isString} from "util";
 import {Database} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
-import {Command} from "./command";
+import {Argument, Command} from "./command";
 
 interface IWeapon {
     _id: string;
@@ -26,7 +26,7 @@ interface IWeapon {
 
 export = class Talent extends Command {
     constructor() {
-        super(["weapon", "weapons"]);
+        super("weapon", [new Argument("name")], "weapons");
     }
     public async run(message: Message, args: string[]): Promise<void> {
         if (message.content.length > 7) {
@@ -48,7 +48,7 @@ export = class Talent extends Command {
             embed.addField("Category", data.category, true);
             embed.addField("Skill", data.skill, true);
             embed.addBlankField(true);
-            embed.addField("Price", data.price.toLocaleString("en-GB") + (data.restricted ? " (R)" : ""), true);
+            embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
             embed.addField("Rarity", data.rarity, true);
             embed.addField("Encumbrance", data.encumbrance, true);
             embed.addField("Damage", data.damage, true);

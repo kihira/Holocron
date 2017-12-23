@@ -2,7 +2,7 @@ import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
 import {Database} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
-import {Command} from "./command";
+import {Argument, Command} from "./command";
 
 interface ITalent {
     _id: string;
@@ -16,7 +16,7 @@ interface ITalent {
 
 export = class Talent extends Command {
     constructor() {
-        super("talent");
+        super("talent", [new Argument("talent")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         if (message.content.length > 7) {

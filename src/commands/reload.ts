@@ -4,7 +4,7 @@ import {Command} from "./command";
 
 export = class Reload extends Command {
     constructor() {
-        super("reload");
+        super("reload", []);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         if (message.author.id !== process.env.ADMIN) return;
