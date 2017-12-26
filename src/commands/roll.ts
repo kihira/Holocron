@@ -1,6 +1,7 @@
 import {Client, Collection, Message, RichEmbed} from "discord.js";
 import * as _ from "lodash";
 import {logger} from "../logger";
+import { defaultParse } from "../util";
 import {Argument, Command} from "./command";
 
 interface Values {
@@ -100,7 +101,7 @@ export = class Roll extends Command {
             {emoji: "forceD", dark: 1},
         ]],
     ]);
-    private symbolEmoji = {
+    private symbolEmoji: {[index: string]: string} = {
         advantage: "advantage",
         despair: "despair",
         failure: "failure",
@@ -144,17 +145,12 @@ export = class Roll extends Command {
             }
             else {
                 logger.verbose(`Loaded emoji ${value} for ${key}`);
-                (this.symbolEmoji as any)[key] = emoji.toString(); // Assign it to something we can use in text
+                this.symbolEmoji[key] = emoji.toString(); // Assign it to something we can use in text
             }
         });
     }
 
     public async run(message: Message, args: string[]): Promise<void> {
-        if (args.length < 1) {
-            await message.reply("Please specify dice to roll");
-            return;
-        }
-
         const diceResults: DieSide[] = [];
 
         for (const arg of args) {
@@ -169,7 +165,7 @@ export = class Roll extends Command {
                     await message.reply(`Invalid dice \`${match[2]}\``);
                     return;
                 }
-                this.rollDice(dice, _.defaultTo(parseInt(match[1], 10), 1), diceResults);
+                this.rollDice(dice, defaultParse(match[1], 1), diceResults);
             }
         }
         const results: Values = this.calcResult(diceResults);
@@ -238,7 +234,7 @@ export = class Roll extends Command {
     private displayResults(results: Values): string {
         let out = "";
         _.forIn(results, (value, key) => {
-            out += (this.symbolEmoji as any)[key].repeat(_.defaultTo(value, 0));
+            out += this.symbolEmoji[key].repeat(_.defaultTo(value, 0));
         });
         return out;
     }
