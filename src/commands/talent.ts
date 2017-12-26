@@ -22,7 +22,7 @@ export = class Talent extends Command {
         if (message.content.length > 7) {
             const talent = escapeRegex(nameToId(args[0]));
             const data = await Database.Data.collection<ITalent>("talents")
-                .findOne({_id: {$regex: talent, $options: "i"}});
+                .find({_id: {$regex: talent, $options: "i"}}).limit(1).next();
 
             if (data == null) {
                 await message.reply("No talent found");

@@ -21,7 +21,7 @@ interface IWeapon {
     rarity: number;
     restricted: boolean;
     skill: string;
-    special?: Array<string | {id: string, value: number}>;
+    special: Array<string | {id: string, value: number}>;
 }
 
 export = class Talent extends Command {
@@ -32,10 +32,10 @@ export = class Talent extends Command {
         if (message.content.length > 7) {
             const talent = escapeRegex(nameToId(args[0]));
             const data = await Database.Data.collection<IWeapon>("weapons")
-                .findOne({name: {$regex: talent, $options: "i"}});
+                .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
 
             if (data == null) {
-                await message.reply("No weapon found");
+                await message.channel.send("No weapon found");
                 return;
             }
 
