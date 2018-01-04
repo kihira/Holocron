@@ -1,7 +1,7 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
 import {Database} from "../db";
-import {escapeRegex, idToName, nameToId} from "../util";
+import {escapeRegex, format, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface ITalent {
@@ -32,7 +32,7 @@ export = class Talent extends Command {
             const embed = new RichEmbed();
             embed.setTitle(idToName(data._id));
             embed.setAuthor(message.member.displayName, message.author.avatarURL);
-            embed.setDescription(data.description || data.short || "");
+            embed.setDescription(format(data.description || data.short || ""));
             embed.setFooter(data.index.join(", "));
             embed.setColor("DARK_RED");
             embed.addField("Ranked", data.ranked ? "True" : "False", true);

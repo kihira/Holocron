@@ -1,8 +1,9 @@
-import {Client, Collection, Message, RichEmbed} from "discord.js";
-import * as _ from "lodash";
-import {logger} from "../logger";
+import { Client, Collection, Message, RichEmbed } from "discord.js";
+import { defaultTo, forIn, mergeWith } from "lodash";
+import { emojiMap } from "../emoji";
+import { logger } from "../logger";
 import { defaultParse } from "../util";
-import {Argument, Command} from "./command";
+import { Argument, Command } from "./command";
 
 interface Values {
     success?: number;
@@ -101,14 +102,6 @@ export = class Roll extends Command {
             {emoji: "forceD", dark: 1},
         ]],
     ]);
-    private symbolEmoji: {[index: string]: string} = {
-        advantage: "advantage",
-        despair: "despair",
-        failure: "failure",
-        success: "success",
-        threat: "threat",
-        triumph: "triumph",
-    };
 
     constructor() {
         super("roll", [new Argument("dice")], "r");
@@ -124,30 +117,6 @@ export = class Roll extends Command {
             logger.error(`Unable to find guild ${process.env.EMOJI_GUILD} for emoji's`);
             return;
         }
-        // Find and load emoji for dice sides
-        this.diceValues.forEach((diceSides, key) => {
-            diceSides.forEach((value) => {
-                const emoji = guild.emojis.find("name", value.emoji);
-                if (emoji === undefined || emoji === null) {
-                    logger.error(`Unable to find emoji ${value.emoji} for ${key}`);
-                }
-                else {
-                    logger.verbose(`Loaded emoji ${value.emoji} for ${key}`);
-                    value.emoji = emoji.toString(); // Assign it to something we can use in text
-                }
-            });
-        });
-
-        _.forIn(this.symbolEmoji, (value, key) => {
-            const emoji = guild.emojis.find("name", value);
-            if (emoji === undefined || emoji === null) {
-                logger.error(`Unable to find emoji ${value} for ${key}`);
-            }
-            else {
-                logger.verbose(`Loaded emoji ${value} for ${key}`);
-                this.symbolEmoji[key] = emoji.toString(); // Assign it to something we can use in text
-            }
-        });
     }
 
     public async run(message: Message, args: string[]): Promise<void> {
@@ -191,8 +160,8 @@ export = class Roll extends Command {
         const results: Values = {};
 
         rolls.forEach((value) => {
-            _.mergeWith(results, value, (objValue, srcValue) => {
-                return _.defaultTo(objValue, 0) + srcValue;
+            mergeWith(results, value, (objValue, srcValue) => {
+                return defaultTo(objValue, 0) + srcValue;
             });
         });
         delete (results as DieSide).emoji; // The merge causes emoji to be copied over, delete it
@@ -233,8 +202,8 @@ export = class Roll extends Command {
 
     private displayResults(results: Values): string {
         let out = "";
-        _.forIn(results, (value, key) => {
-            out += this.symbolEmoji[key].repeat(_.defaultTo(value, 0));
+        forIn(results, (value, key) => {
+            out += (emojiMap.get(key) || "").repeat(defaultTo(value, 0));
         });
         return out;
     }
