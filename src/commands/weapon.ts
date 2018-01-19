@@ -1,3 +1,4 @@
+import {ObjectID} from "bson";
 import {Message, RichEmbed} from "discord.js";
 import {isString} from "util";
 import {Database} from "../db";
@@ -5,7 +6,7 @@ import {escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface IWeapon {
-    _id: string;
+    _id: ObjectID;
     category: string;
     critical: number;
     damage: number;
