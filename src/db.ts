@@ -4,7 +4,7 @@ import {logger} from "./logger";
 class Mongo {
     public Data: Db;
     public Settings: Db;
-    private client: Db;
+    private client: MongoClient;
 
     public async connect() {
         try {
