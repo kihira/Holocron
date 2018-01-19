@@ -27,8 +27,10 @@ const check = new Map<string, string>([
 ]);
 
 export function format(input: string): string {
-    return input.replace(/\[CHECK:([A-Z]+):?([a-zA-Z]*)\]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)} check**`)
-                .replace(/\[CHARACTERISTIC:([a-zA-Z]+)\]/g, "**$1**")
-                .replace(/\[([A-Z]+)\]/g, (match, p1) => emojiMap.get(p1.toLowerCase()) || p1)
-                .replace(/\[([A-Z]+):?([a-zA-Z]*)\]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)}**`);
+    return input
+        .replace(/\[CHECK:([A-Z]+):?([a-zA-Z]*)]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)} check**`)
+        .replace(/\[CHARACTERISTIC:([a-zA-Z]+)]/g, "**$1**")
+        .replace(/\[([A-Z]+)]/g, (match, p1) => emojiMap.get(p1.toLowerCase()) || p1)
+        .replace(/\[([A-Z]+):?([a-zA-Z]*)]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)}**`)
+        .replace(/\[BR]/g, "\n");
 }
