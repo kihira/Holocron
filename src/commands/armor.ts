@@ -21,33 +21,31 @@ export = class Armor extends Command {
         super("armor", [new Argument("name")], "armour");
     }
     public async run(message: Message, args: string[]): Promise<void> {
-        if (message.content.length > 7) {
-            const talent = escapeRegex(nameToId(args[0]));
-            const data = await Database.Data.collection<IArmor>("armor")
-                .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
+        const talent = escapeRegex(nameToId(args[0]));
+        const data = await Database.Data.collection<IArmor>("armor")
+            .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
 
-            if (data == null) {
-                await message.channel.send("No armor found");
-                return;
-            }
-
-            const embed = new RichEmbed();
-            embed.setTitle(data.name);
-            embed.setAuthor(message.member.displayName, message.author.avatarURL);
-            embed.setDescription(data.description || data.notes || "");
-            embed.setFooter(data.index.join(", "));
-            embed.setColor("DARK_RED");
-            embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
-            embed.addField("Rarity", data.rarity, true);
-            embed.addField("Encumbrance", data.encumbrance, true);
-            embed.addField("Soak", data.soak, true);
-            embed.addField("Defense", data.defense, true);
-            embed.addField("Hard Points", data.hardpoints, true);
-            if (process.env.DATA_URL !== undefined) {
-                embed.setURL(process.env.DATA_URL + "/armor/" + data._id);
-            }
-
-            await message.channel.send(embed);
+        if (data == null) {
+            await message.channel.send("No armor found");
+            return;
         }
+
+        const embed = new RichEmbed();
+        embed.setTitle(data.name);
+        embed.setAuthor(message.member.displayName, message.author.avatarURL);
+        embed.setDescription(data.description || data.notes || "");
+        embed.setFooter(data.index.join(", "));
+        embed.setColor("DARK_RED");
+        embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
+        embed.addField("Rarity", data.rarity, true);
+        embed.addField("Encumbrance", data.encumbrance, true);
+        embed.addField("Soak", data.soak, true);
+        embed.addField("Defense", data.defense, true);
+        embed.addField("Hard Points", data.hardpoints, true);
+        if (process.env.DATA_URL !== undefined) {
+            embed.setURL(process.env.DATA_URL + "/armor/" + data._id);
+        }
+
+        await message.channel.send(embed);
     }
 };
