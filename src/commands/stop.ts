@@ -1,5 +1,4 @@
 import {Message} from "discord.js";
-import {Commands} from "../commands";
 import {Command} from "./command";
 
 export = class Stop extends Command {

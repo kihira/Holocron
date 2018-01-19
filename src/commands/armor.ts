@@ -1,7 +1,6 @@
 import {Message, RichEmbed} from "discord.js";
-import {isObject, isString} from "util";
 import {Database} from "../db";
-import {escapeRegex, idToName, nameToId} from "../util";
+import {escapeRegex, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface IArmor {

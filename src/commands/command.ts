@@ -1,5 +1,4 @@
 import {Client, Message} from "discord.js";
-import {isArray} from "util";
 
 export abstract class Command {
     public readonly name: string;
