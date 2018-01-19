@@ -36,7 +36,7 @@ export = class Quality extends Command {
             embed.addField("Active", data.active, true);
             embed.addField("Ranked", data.ranked ? "True" : "False", true);
             if (process.env.DATA_URL !== undefined) {
-                embed.setURL(process.env.DATA_URL + "/weapons/" + data._id);
+                embed.setURL(process.env.DATA_URL + "/qualities/" + data._id);
             }
 
             await message.channel.send(embed);
