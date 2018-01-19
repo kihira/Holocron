@@ -1,5 +1,6 @@
 import {Db, MongoClient} from "mongodb";
 import {logger} from "./logger";
+import {ObjectID} from "bson";
 
 class Mongo {
     public Data: Db;
@@ -21,3 +22,9 @@ class Mongo {
 }
 
 export const Database = new Mongo();
+
+export interface Entry {
+    _id: string | ObjectID;
+    index: string[];
+    description?: string;
+}

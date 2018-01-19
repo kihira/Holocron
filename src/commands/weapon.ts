@@ -1,20 +1,16 @@
-import {ObjectID} from "bson";
 import {Message, RichEmbed} from "discord.js";
 import {isString} from "util";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface IWeapon {
-    _id: ObjectID;
+interface IWeapon extends Entry {
     category: string;
     critical: number;
     damage: number;
-    description?: string;
     encumbrance: number;
     hardpoints: number;
     image?: string;
-    index: string[];
     name: string;
     notes?: string;
     price: number;

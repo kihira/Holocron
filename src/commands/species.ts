@@ -1,17 +1,14 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, format, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 import {ICharacteristics} from "../characteristics";
 import * as assert from "assert";
 
-interface ISpecies {
+interface ISpecies extends Entry {
     _id: string;
     player?: boolean;
-    index: string[];
-    short?: string;
-    description?: string;
 }
 
 interface IPlayerSpecies extends ISpecies {
@@ -39,7 +36,7 @@ export = class Species extends Command {
             const embed = new RichEmbed();
             embed.setTitle(idToName(data._id));
             embed.setAuthor(message.member.displayName, message.author.avatarURL);
-            embed.setDescription(format(data.description || data.short || ""));
+            embed.setDescription(format(data.description || ""));
             embed.setFooter(data.index.join(", "));
             embed.setColor("DARK_RED");
             embed.addField("Player", data.player ? "True" : "False");

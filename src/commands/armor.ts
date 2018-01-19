@@ -1,16 +1,13 @@
 import {Message, RichEmbed} from "discord.js";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface IArmor {
-    _id: string;
+interface IArmor extends Entry {
     defense: number;
-    description?: string;
     encumbrance: number;
     hardpoints: number;
     image?: string;
-    index: string[];
     name: string;
     notes?: string;
     price: number;

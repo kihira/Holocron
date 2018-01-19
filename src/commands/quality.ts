@@ -1,13 +1,12 @@
 import {Message, RichEmbed} from "discord.js";
 import {isString} from "util";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface IQuality {
+interface IQuality extends Entry {
     _id: string;
-    description?: string;
-    index: string[];
+    description: string;
     active: "Active" | "Passive"; // todo should switch this to true/fale
     ranked: boolean;
 }
@@ -30,7 +29,7 @@ export = class Quality extends Command {
             const embed = new RichEmbed();
             embed.setTitle(idToName(data._id));
             embed.setAuthor(message.member.displayName, message.author.avatarURL);
-            embed.setDescription(data.description || "");
+            embed.setDescription(data.description);
             embed.setFooter(data.index.join(", "));
             embed.setColor("DARK_RED");
             embed.addField("Active", data.active, true);

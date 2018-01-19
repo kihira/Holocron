@@ -1,16 +1,14 @@
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, format, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface ITalent {
+interface ITalent extends Entry {
     _id: string;
     force: boolean;
     ranked: boolean;
-    index: string[];
     short?: string;
-    description?: string;
     activation: boolean | {Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean};
 }
 

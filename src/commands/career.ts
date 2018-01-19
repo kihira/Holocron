@@ -1,13 +1,11 @@
 import {Message, RichEmbed} from "discord.js";
 import {isString} from "util";
-import {Database} from "../db";
+import {Database, Entry} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface ICareer {
+interface ICareer extends Entry {
     _id: string;
-    description?: string;
-    index: string[];
     skills: string[];
     specializations: string[];
 }
