@@ -4,34 +4,28 @@ import {Database, Entry} from "../db";
 import {escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
-interface IWeapon extends Entry {
+interface IGear extends Entry {
     category: string;
-    critical: number;
-    damage: number;
     encumbrance: number;
-    hardpoints: number;
     image?: string;
     name: string;
     notes?: string;
     price: number;
-    range: string;
     rarity: number;
     restricted: boolean;
-    skill: string;
-    special: Array<string | {id: string, value: number}>;
 }
 
-export = class Weapon extends Command {
+export = class Gear extends Command {
     constructor() {
-        super("weapon", [new Argument("name")], "weapons");
+        super("gear", [new Argument("name")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection<IWeapon>("weapons")
+        const data = await Database.Data.collection<IGear>("gear")
             .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
 
         if (data == null) {
-            await message.channel.send("No weapon found");
+            await message.channel.send("No gear found");
             return;
         }
 
@@ -41,21 +35,12 @@ export = class Weapon extends Command {
         embed.setDescription(data.description || data.notes || "");
         embed.setFooter(data.index.join(", "));
         embed.setColor("DARK_RED");
-        embed.addField("Category", data.category, true);
-        embed.addField("Skill", data.skill, true);
-        embed.addBlankField(true);
+        embed.addField("Category", data.category);
         embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
         embed.addField("Rarity", data.rarity, true);
         embed.addField("Encumbrance", data.encumbrance, true);
-        embed.addField("Damage", data.damage, true);
-        embed.addField("Critical", data.critical, true);
-        embed.addField("Hard Points", data.hardpoints, true);
-        if (data.special) {
-            // tslint:disable-next-line:max-line-length
-            embed.addField("Special", data.special.map((element) => isString(element) ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
-        }
         if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/weapons/" + data._id);
+            embed.setURL(process.env.DATA_URL + "/gear/" + data._id);
         }
 
         await message.channel.send(embed);
