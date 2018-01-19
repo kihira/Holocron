@@ -25,8 +25,8 @@ const init = async () => {
     // Register commands
     client.on("ready", async () => {
         logger.info("Connected to Discord");
-        await Commands.init(client);
         emojiCache.init(client);
+        await Commands.init(client);
     });
 
     // Begin connect

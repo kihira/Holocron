@@ -1,5 +1,4 @@
-import { Client, Collection } from "discord.js";
-import { forIn } from "lodash";
+import { Client } from "discord.js";
 import { logger } from "./logger";
 
 // Simple file for storing a cache of emojis so no need to constantly look them up
@@ -31,6 +30,13 @@ export async function init(client: Client) {
 
 export const emojiMap = new Map<string, string>([
     ["light", "⚪"],
+    ["dark", "⚫"],
     ["BOOST", "boost"],
+    ["SUCCESS", "success"],
     ["ADVANTAGE", "advantage"],
+    ["TRIUMPH", "triumph"],
+    ["SETBACK", "setback"],
+    ["FAILURE", "failure"],
+    ["THREAT", "threat"],
+    ["DESPAIR", "despair"],
 ]);
