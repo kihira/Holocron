@@ -21,8 +21,8 @@ export = class Gear extends Command {
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection<IGear>("gear")
-            .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("gear")
+            .find<IGear>({name: {$regex: talent, $options: "i"}}).next();
 
         if (data == null) {
             await message.channel.send("No gear found");

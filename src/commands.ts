@@ -6,7 +6,12 @@ import {logger} from "./logger";
 
 class CommandRegistry {
     private commands: Collection<string, Command> = new Collection<string, Command>();
-    private client: Client;
+    private client!: Client;
+
+    public async init(client: Client) {
+        this.client = client;
+        await this.loadAllCommands();
+    }
 
     public register(command: Command) {
         if (this.commands.has(command.name)) {
@@ -32,11 +37,6 @@ class CommandRegistry {
 
     public get(name: string): Command | undefined {
         return this.commands.get(name);
-    }
-
-    public async init(client: Client) {
-        this.client = client;
-        await this.loadAllCommands();
     }
 
     public async loadAllCommands() {

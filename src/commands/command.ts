@@ -2,7 +2,7 @@ import {Client, Message} from "discord.js";
 
 export abstract class Command {
     public readonly name: string;
-    public readonly aliases: string[];
+    public readonly aliases: string[] | undefined;
     public readonly arguments: Argument[];
 
     constructor(name: string, args: Argument[], ...aliases: string[]) {
@@ -22,7 +22,7 @@ export class Argument {
 
     constructor(name: string, description?: string, required: boolean = true) {
         this.name = name;
-        if (description !== undefined) this.description = description;
+        this.description = description || "";
         this.required = required;
     }
 }

@@ -1,11 +1,11 @@
+import {ObjectID} from "bson";
 import {Db, MongoClient} from "mongodb";
 import {logger} from "./logger";
-import {ObjectID} from "bson";
 
 class Mongo {
-    public Data: Db;
-    public Settings: Db;
-    private client: MongoClient;
+    public Data!: Db;
+    public Settings!: Db;
+    private client!: MongoClient;
 
     public async connect() {
         try {

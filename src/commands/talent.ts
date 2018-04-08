@@ -18,8 +18,8 @@ export = class Talent extends Command {
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection<ITalent>("talents")
-            .find({_id: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("talents")
+            .find<ITalent>({_id: {$regex: talent, $options: "i"}}).limit(1).next();
 
         if (data == null) {
             await message.reply("No talent found");

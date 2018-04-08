@@ -27,8 +27,8 @@ export = class Weapon extends Command {
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection<IWeapon>("weapons")
-            .find({name: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("weapons")
+            .find<IWeapon>({name: {$regex: talent, $options: "i"}}).limit(1).next();
 
         if (data == null) {
             await message.channel.send("No weapon found");
