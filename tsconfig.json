@@ -5,8 +5,7 @@
     "moduleResolution": "node",
     "target": "es2017",
     "strict": true,
-    "inlineSourceMap": true,
-    "watch": true
+    "inlineSourceMap": true
   },
   "exclude": [
     "node_modules"

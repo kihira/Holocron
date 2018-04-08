@@ -1,8 +1,9 @@
-FROM node:alpine
+FROM node:9
 
-RUN mkdir -p /bot
 WORKDIR /bot
 
 COPY . /bot
+RUN npm install
+RUN npm run build
 
 CMD ["node", "index.js"]
