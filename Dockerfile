@@ -3,7 +3,7 @@ FROM node:9
 WORKDIR /bot
 
 COPY . /bot
-RUN npm install
-RUN npm run build
+RUN yarn install
+RUN yarn run build
 
 CMD ["node", "index.js"]
