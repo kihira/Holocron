@@ -4,7 +4,7 @@ import {readdir} from "fs";
 import {promisify} from "util";
 import {Commands} from "./src/commands";
 import {Database} from "./src/db";
-import * as emojiCache from "./src/emoji";
+import {EmojiCache} from "./src/emoji";
 import {logger} from "./src/logger";
 
 const client = new Client();
@@ -25,7 +25,7 @@ const init = async () => {
     // Register commands
     client.on("ready", async () => {
         logger.info("Connected to Discord");
-        await emojiCache.init(client);
+        await EmojiCache.init(client);
         await Commands.init(client);
     });
 
