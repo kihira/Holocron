@@ -10,18 +10,18 @@
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "erlpack": "github:discordapp/erlpack",
-    "lodash": "^4.17.5",
-    "mongodb": "^3.0.5",
+    "lodash": "^4.17.10",
+    "mongodb": "^3.1.0-beta4",
     "uws": "^9.14.0",
-    "winston": "^2.4.1"
+    "winston": "^2.4.2"
   },
   "devDependencies": {
-    "typescript": "^2.8.1",
-    "tslint": "^5.9.1",
+    "typescript": "^2.8.3",
+    "tslint": "^5.10.0",
     "@types/dotenv": "^4.0.3",
-    "@types/node": "^9.6.2",
-    "@types/lodash": "^4.14.106",
-    "@types/mongodb": "^3.0.10",
+    "@types/node": "^10.1.2",
+    "@types/lodash": "^4.14.109",
+    "@types/mongodb": "^3.0.18",
     "@types/winston": "^2.3.9"
   }
 }
