@@ -57,19 +57,27 @@ export = class Starship extends Command {
             return;
         }
 
+        let hyperdrive = "None";
+        if (data.hyperdrive !== undefined) {
+            hyperdrive = `**Primary:** Class ${data.hyperdrive.primary}`;
+            if (data.hyperdrive.secondary !== undefined) {
+                hyperdrive += `, **Secondary:** Class ${data.hyperdrive.secondary}`;
+            }
+        }
+
         const embed = new RichEmbed();
         embed.setTitle(data.name);
         embed.setAuthor(message.member.displayName, message.author.avatarURL);
         embed.setDescription(data.description || data.notes || "");
         embed.setFooter(data.index.join(", "));
         embed.setColor("DARK_RED");
-        embed.addField("Category", data.category, true);
+        embed.addField("Hull Type/Class", `${data.category}/${data.model}`, true);
         embed.addField("Manufacturer", data.manufacturer, true); // todo combine manu/model as per book?
-        embed.addField("Model", data.model, true);
 
-        embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
-        embed.addField("Rarity", data.rarity, true);
+        embed.addField("Price/Rarity",
+            `${data.price.toLocaleString()}${data.restricted ? " (R)" : ""}/${data.rarity}`, true);
         embed.addField("Encumbrance", data.encumbrance, true);
+        embed.addField("Hyperdrive", hyperdrive, true);
 
         embed.addField("Armor", data.armor, true);
         embed.addField("Strain Threshold", data.strain, true);
