@@ -11,6 +11,7 @@ export abstract class Command {
         if (aliases !== undefined) this.aliases = aliases;
     }
     public abstract async run(message: Message, args: string[]): Promise<void>;
+    // tslint:disable-next-line:no-empty
     public async init(client: Client): Promise<void> {}
 }
 
