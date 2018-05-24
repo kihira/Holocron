@@ -1,6 +1,6 @@
 import { Message, RichEmbed } from "discord.js";
 import { Database, Entry } from "../db";
-import { escapeRegex, nameToId } from "../util";
+import { escapeRegex } from "../util";
 import { Argument, Command } from "./command";
 
 interface IDefense {
@@ -42,14 +42,14 @@ interface IStarship extends Entry {
     weapons: number; // TODO convert to array
 }
 
-export default class Starship extends Command {
+export = class Starship extends Command {
     constructor() {
         super("starship", [new Argument("spaceship")], "spaceship");
     }
 
     public async run(message: Message, args: string[]): Promise<void> {
         const name = escapeRegex(args[0]);
-        const data = await Database.Data.collection("weapons")
+        const data = await Database.Data.collection("starships")
             .findOne<IStarship>({name: {$regex: name, $options: "i"}});
 
         if (data == null) {
@@ -95,4 +95,4 @@ export default class Starship extends Command {
 
         await message.channel.send(embed);
     }
-}
+};

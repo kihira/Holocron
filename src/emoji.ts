@@ -44,6 +44,10 @@ class EmojiRegistery {
             this.emojiMap.set(element.name, element.toString());
         });
     }
+
+    public get(key: string): string {
+        return this.emojiMap.get(key) || "";
+    }
 }
 
 export const EmojiCache = new EmojiRegistery();
