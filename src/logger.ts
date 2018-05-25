@@ -1,12 +1,16 @@
 import * as winston from "winston";
 
-const console = new winston.transports.Console();
-const file = new winston.transports.File({ filename: "combined.log" });
-
 // todo look into updating to 3.0 when types available
-export const logger = new winston.Logger({
+export const logger = winston.createLogger({
+    level: "info",
     transports: [
-        console,
-        file,
+        new winston.transports.File({ filename: "error.log", level: "error" }),
+        new winston.transports.File({ filename: "combined.log" }),
     ],
 });
+
+if (process.env.NODE_ENV !== "production") {
+    logger.add(new winston.transports.Console({
+        format: winston.format.simple(),
+    }));
+}
