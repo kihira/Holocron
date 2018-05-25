@@ -1,6 +1,6 @@
 import { Client, Collection, Message, RichEmbed } from "discord.js";
 import { defaultTo, forIn, mergeWith } from "lodash";
-import { emojiMap } from "../emoji";
+import {EmojiCache} from "../emoji";
 import { logger } from "../logger";
 import { defaultParse } from "../util";
 import { Argument, Command } from "./command";
@@ -203,7 +203,7 @@ export = class Roll extends Command {
     private displayResults(results: Values): string {
         let out = "";
         forIn(results, (value, key) => {
-            out += (emojiMap.get(key) || "").repeat(defaultTo(value, 0));
+            out += (EmojiCache.get(key) || "").repeat(defaultTo(value, 0));
         });
         return out;
     }

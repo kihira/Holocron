@@ -23,7 +23,7 @@ interface IWeapon extends Entry {
 
 export = class Weapon extends Command {
     constructor() {
-        super("weapon", [new Argument("name")], "weapons");
+        super(["weapon", "weapons"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));

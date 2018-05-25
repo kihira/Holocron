@@ -18,7 +18,7 @@ interface IArmor extends Entry {
 
 export = class Armor extends Command {
     constructor() {
-        super("armor", [new Argument("name")], "armour");
+        super(["armor", "armour"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));

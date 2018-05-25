@@ -11,7 +11,7 @@ interface ISpecialization extends Entry {
 
 export = class Armor extends Command {
     constructor() {
-        super("specialization", [new Argument("name")], "specialisation", "spec");
+        super(["specialization", "specialisation", "spec"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));

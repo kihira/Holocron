@@ -1,10 +1,10 @@
+import * as assert from "assert";
 import {Message, RichEmbed} from "discord.js";
 import {isObject} from "util";
+import {ICharacteristics} from "../characteristics";
 import {Database, Entry} from "../db";
 import {escapeRegex, format, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
-import {ICharacteristics} from "../characteristics";
-import * as assert from "assert";
 
 interface ISpecies extends Entry {
     _id: string;

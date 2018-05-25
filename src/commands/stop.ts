@@ -1,13 +1,11 @@
 import {Message} from "discord.js";
-import {Command} from "./command";
+import {Command, PermissionLevel} from "./command";
 
 export = class Stop extends Command {
     constructor() {
-        super("stop", []);
+        super("stop", undefined, PermissionLevel.BOT_ADMIN);
     }
     public async run(message: Message, args: string[]): Promise<void> {
-        if (message.author.id !== process.env.ADMIN) return;
-
         await message.client.destroy();
         process.exit(0);
     }
