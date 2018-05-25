@@ -1,14 +1,12 @@
 import {Message} from "discord.js";
 import {Commands} from "../commands";
-import {Argument, Command} from "./command";
+import {Argument, Command, PermissionLevel} from "./command";
 
 export = class Reload extends Command {
     constructor() {
-        super("reload", [new Argument("command")]);
+        super("reload", [new Argument("command")], PermissionLevel.BOT_ADMIN);
     }
     public async run(message: Message, args: string[]): Promise<void> {
-        if (message.author.id !== process.env.ADMIN) return;
-
         const cmdName = args[0];
         const cmd = Commands.get(cmdName);
         if (cmd === undefined) {

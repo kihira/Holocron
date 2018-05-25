@@ -26,6 +26,7 @@ const check = new Map<string, string>([
     ["FORMIDABLE", `Formidable (${(EmojiCache.get("difficulty")).repeat(5)})`],
 ]);
 
+// TODO should cache this output? could be expensive to run it often
 export function format(input: string): string {
     return input
         .replace(/\[CHECK:([A-Z]+):?([a-zA-Z]*)]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)} check**`)

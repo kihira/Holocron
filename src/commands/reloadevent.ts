@@ -1,19 +1,12 @@
 import {Message} from "discord.js";
 import {logger} from "../logger";
-import {Command} from "./command";
+import {Argument, Command, PermissionLevel} from "./command";
 
 export = class ReloadEvent extends Command {
     constructor() {
-        super("reloadevent", []);
+        super("reloadevent", [new Argument("event")], PermissionLevel.BOT_ADMIN);
     }
     public async run(message: Message, args: string[]): Promise<void> {
-        if (message.author.id !== process.env.ADMIN) return;
-
-        if (args.length < 1) {
-            await message.reply("Please specify an event to reload");
-            return;
-        }
-
         const eventName = args[0];
         try {
             delete require.cache[require.resolve(`../events/${eventName}.js`)];

@@ -13,7 +13,7 @@ interface IQuality extends Entry {
 
 export = class Quality extends Command {
     constructor() {
-        super("quality", [new Argument("name")], "qualities", "special");
+        super(["quality", "qualities", "special"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));

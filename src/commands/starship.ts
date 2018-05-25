@@ -44,7 +44,7 @@ interface IStarship extends Entry {
 
 export = class Starship extends Command {
     constructor() {
-        super("starship", [new Argument("spaceship")], "spaceship");
+        super(["starship", "spaceship"], [new Argument("spaceship")]);
     }
 
     public async run(message: Message, args: string[]): Promise<void> {
