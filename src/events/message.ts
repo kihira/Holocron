@@ -1,10 +1,14 @@
-import {Message} from "discord.js";
-import {Commands} from "../commands";
+import { Message } from "discord.js";
+import { Commands } from "../commands";
 import { PermissionLevel } from "../commands/command";
+import { Database } from "../db";
+import { IGuildSettings } from "../IGuildSettings";
+import { GuildSettings } from "../settings";
 
 export = async (message: Message) => {
     if (message.author.bot) return;
-    if (!message.content.startsWith("!")) return;
+    const settings = await GuildSettings.getSettings(message.guild);
+    if (!message.content.startsWith(settings.prefix)) return;
 
     const split = message.content.split(/ +/g);
     const cmd = Commands.get(split[0].slice(1));
@@ -17,13 +21,13 @@ export = async (message: Message) => {
         switch (cmd.permissionLevel) {
             case PermissionLevel.BOT_ADMIN:
                 if (message.author.id !== process.env.ADMIN) {
-                    await message.reply(`You do not have permission to use \`${split[0].slice(1)}\``);
+                    await message.reply(`You do not have permission to use \`${cmd}\``);
                     return;
                 }
                 break;
             case PermissionLevel.GUILD_OWNER:
                 if (message.author.id !== message.guild.ownerID) {
-                    await message.reply(`You do not have permission to use \`${split[0].slice(1)}\``);
+                    await message.reply(`You do not have permission to use \`${cmd}\``);
                     return;
                 }
                 break;
