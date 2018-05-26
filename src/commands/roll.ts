@@ -104,7 +104,7 @@ export = class Roll extends Command {
     ]);
 
     constructor() {
-        super("roll", [new Argument("dice")], "r");
+        super(["roll", "r"], [new Argument("dice")]);
     }
 
     public async init(client: Client): Promise<void> {

@@ -1,7 +1,6 @@
-import {Message, RichEmbed} from "discord.js";
-import {isString} from "util";
+import {Message} from "discord.js";
 import {Database, Entry} from "../db";
-import {escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface IQuality extends Entry {
@@ -25,17 +24,9 @@ export = class Quality extends Command {
             return;
         }
 
-        const embed = new RichEmbed();
-        embed.setTitle(idToName(data._id));
-        embed.setAuthor(message.member.displayName, message.author.avatarURL);
-        embed.setDescription(data.description);
-        embed.setFooter(data.index.join(", "));
-        embed.setColor("DARK_RED");
+        const embed = createEmbed(message, data, "qualities");
         embed.addField("Active", data.active, true);
         embed.addField("Ranked", data.ranked ? "True" : "False", true);
-        if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/qualities/" + data._id);
-        }
 
         await message.channel.send(embed);
     }

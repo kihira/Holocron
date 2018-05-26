@@ -1,7 +1,6 @@
-import {Message, RichEmbed} from "discord.js";
-import {isString} from "util";
+import {Message} from "discord.js";
 import {Database, Entry} from "../db";
-import {escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface ICareer extends Entry {
@@ -24,17 +23,9 @@ export = class Quality extends Command {
             return;
         }
 
-        const embed = new RichEmbed();
-        embed.setTitle(idToName(data._id));
-        embed.setAuthor(message.member.displayName, message.author.avatarURL);
-        embed.setDescription(data.description || "");
-        embed.setFooter(data.index.join(", "));
-        embed.setColor("DARK_RED");
+        const embed = createEmbed(message, data, "careers");
         embed.addField("Skills", data.skills.join(" ,"));
         embed.addField("Specializations", data.specializations.join(" ,"));
-        if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/careers/" + data._id);
-        }
 
         await message.channel.send(embed);
     }

@@ -1,7 +1,6 @@
-import {Message, RichEmbed} from "discord.js";
-import {isString} from "util";
+import {Message} from "discord.js";
 import {Database, Entry} from "../db";
-import {escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface IGear extends Entry {
@@ -29,19 +28,12 @@ export = class Gear extends Command {
             return;
         }
 
-        const embed = new RichEmbed();
-        embed.setTitle(data.name);
-        embed.setAuthor(message.member.displayName, message.author.avatarURL);
-        embed.setDescription(data.description || data.notes || "");
-        embed.setFooter(data.index.join(", "));
-        embed.setColor("DARK_RED");
+        const embed = createEmbed(message, data, "gear", data.name);
         embed.addField("Category", data.category);
+
         embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
         embed.addField("Rarity", data.rarity, true);
         embed.addField("Encumbrance", data.encumbrance, true);
-        if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/gear/" + data._id);
-        }
 
         await message.channel.send(embed);
     }
