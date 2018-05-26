@@ -2,8 +2,6 @@ import {defaultTo} from "lodash";
 import {EmojiCache} from "./emoji";
 import {Message, RichEmbed} from "discord.js";
 import {Entry} from "./db";
-import {types} from "util";
-import isMap = module
 
 export function escapeRegex(str: string): string {
     return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
@@ -44,7 +42,7 @@ export function createEmbed(message: Message, data: Entry, endpoint?: string, na
     const embed = new RichEmbed();
     embed.setTitle(name || idToName(data._id as string));
     embed.setAuthor(message.member.displayName, message.author.avatarURL);
-    embed.setDescription(data.description);
+    if (data.description) embed.setDescription(data.description);
     embed.setFooter(data.index.join(", "));
     embed.setColor("DARK_RED");
     if (data.image !== undefined) {

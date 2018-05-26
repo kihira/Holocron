@@ -1,12 +1,13 @@
-import {Message, RichEmbed} from "discord.js";
+import {Message} from "discord.js";
 import {isString} from "util";
 import {Database, Entry} from "../db";
 import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
+import {EmojiCache} from "../emoji";
 
 interface IWeapon extends Entry {
     category: string;
-    critical: number;
+    critical: number | "-"; // TODO should convert the - to 0
     damage: number;
     encumbrance: number;
     hardpoints: number;
@@ -27,8 +28,7 @@ export = class Weapon extends Command {
     }
     public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("weapons")
-            .find<IWeapon>({name: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("weapons").findOne<IWeapon>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.channel.send("No weapon found");
@@ -37,20 +37,31 @@ export = class Weapon extends Command {
 
         const embed = createEmbed(message, data, "weapons", data.name);
 
-        embed.addField("Category", data.category, true);
-        embed.addField("Skill", data.skill, true);
-        embed.addBlankField(true);
+        embed.addField("Damage", data.damage, true);
+        embed.addField("Critical", data.critical === "-" ? "-" : EmojiCache.get("advantage").repeat(data.critical), true);
+        embed.addField("Hard Points", data.hardpoints, true);
 
         embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
         embed.addField("Rarity", data.rarity, true);
         embed.addField("Encumbrance", data.encumbrance, true);
 
-        embed.addField("Damage", data.damage, true);
-        embed.addField("Critical", data.critical, true);
-        embed.addField("Hard Points", data.hardpoints, true);
+        embed.addField("Category", data.category, true);
+        embed.addField("Skill", data.skill, true);
+
+/*        embed.addField("Damage", data.damage, true);
+        embed.addField("Critical", data.critical === "-" ? "-" : EmojiCache.get("advantage").repeat(data.critical), true);
+        embed.addField("Skill", data.skill, true);
+
+        embed.addField("Description", `
+**Category:** ${data.category}
+**Price:** ${data.price.toLocaleString() + (data.restricted ? " (R)" : "")}
+**Rarity:** ${data.rarity}
+**Encumbrance:** ${data.encumbrance}
+**Hard Points:** ${data.hardpoints}
+        `);*/
+
         if (data.special) {
-            // tslint:disable-next-line:max-line-length
-            embed.addField("Special", data.special.map((element) => isString(element) ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
+            embed.addField("Special", data.special.map((element) => typeof (element) === "string" ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
         }
 
         await message.channel.send(embed);
