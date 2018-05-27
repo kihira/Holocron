@@ -1,5 +1,7 @@
 import {defaultTo} from "lodash";
 import {EmojiCache} from "./emoji";
+import {Message, RichEmbed} from "discord.js";
+import {Entry} from "./db";
 
 export function escapeRegex(str: string): string {
     return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
@@ -34,4 +36,25 @@ export function format(input: string): string {
         .replace(/\[([A-Z]+)]/g, (match, p1) => EmojiCache.get(p1.toLowerCase()) || p1)
         .replace(/\[([A-Z]+):?([a-zA-Z]*)]/g, (match, p1, p2) => `**${check.get(p1) || p1} ${idToName(p2)}**`)
         .replace(/\[BR]/g, "\n");
+}
+
+export function createEmbed(message: Message, data: Entry, endpoint?: string, name?: string): RichEmbed {
+    const embed = new RichEmbed();
+    embed.setTitle(name || idToName(data._id as string));
+    embed.setAuthor(message.member.displayName, message.author.avatarURL);
+    if (data.description) embed.setDescription(data.description);
+    embed.setFooter(data.index.join(", "));
+    embed.setColor("DARK_RED");
+    if (data.image !== undefined) {
+        if (data.image.startsWith("http")) {
+            embed.setThumbnail(data.image);
+        }
+        else if (process.env.DATA_URL !== undefined) {
+            embed.setThumbnail(process.env.DATA_URL + data.image);
+        }
+    }
+    if (process.env.DATA_URL !== undefined && endpoint !== undefined) {
+        embed.setURL(`${process.env.DATA_URL}/${endpoint}/${data._id}`);
+    }
+    return embed;
 }

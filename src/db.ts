@@ -27,4 +27,5 @@ export interface Entry {
     _id: string | ObjectID;
     index: string[];
     description?: string;
+    image?: string;
 }

@@ -1,7 +1,7 @@
-import {Message, RichEmbed} from "discord.js";
+import {Message} from "discord.js";
 import {isObject} from "util";
 import {Database, Entry} from "../db";
-import {escapeRegex, format, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
 
 interface ITalent extends Entry {
@@ -26,12 +26,7 @@ export = class Talent extends Command {
             return;
         }
 
-        const embed = new RichEmbed();
-        embed.setTitle(idToName(data._id));
-        embed.setAuthor(message.member.displayName, message.author.avatarURL);
-        embed.setDescription(format(data.description || data.short || ""));
-        embed.setFooter(data.index.join(", "));
-        embed.setColor("DARK_RED");
+        const embed = createEmbed(message, data, "species");
         embed.addField("Ranked", data.ranked ? "True" : "False", true);
         embed.addField("Force", data.force ? "True" : "False", true);
 
@@ -40,7 +35,7 @@ export = class Talent extends Command {
         }
         else {
             let value = "Active";
-            if (isObject(data.activation)) {
+            if (typeof(data.activation) === "object") {
                 value += " (";
                 const keys = Object.keys(data.activation);
                 for (let i = 0; i < keys.length; i++) {
@@ -51,9 +46,7 @@ export = class Talent extends Command {
             }
             embed.addField("Activation", value, true);
         }
-        if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/talents/" + data._id);
-        }
+
         await message.channel.send({embed});
     }
 };
