@@ -26,7 +26,7 @@ export = class Weapon extends Command {
         super(["weapon", "weapons"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args[0]);
+        const talent = escapeRegex(args.join(" "));
         const data = await Database.Data.collection("weapons").findOne<IWeapon>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {

@@ -19,7 +19,7 @@ export = class Gear extends Command {
         super("gear", [new Argument("name")]);
     }
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args[0]);
+        const talent = escapeRegex(args.join(" "));
         const data = await Database.Data.collection("gear").findOne<IGear>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {

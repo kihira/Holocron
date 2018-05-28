@@ -21,7 +21,7 @@ export = class Armor extends Command {
         super(["armor", "armour"], [new Argument("name")]);
     }
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args[0]);
+        const talent = escapeRegex(args.join(" "));
         const data = await Database.Data.collection("armor").findOne<IArmor>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {

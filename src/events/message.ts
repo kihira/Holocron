@@ -41,7 +41,7 @@ export = async (message: Message) => {
     }
     // Checks args
     const args = split.slice(1);
-    if (cmd.arguments !== undefined && cmd.arguments.length !== args.length) {
+    if (cmd.arguments !== undefined && cmd.arguments.length > args.length) { // quick and dirty hack for now
         await message.reply("Invalid number of arguments"); // todo show help for cmd
     }
     else await cmd.run(message, split.slice(1));

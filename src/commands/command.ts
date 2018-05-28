@@ -29,6 +29,7 @@ export enum PermissionLevel {
     ALL,
 }
 
+// todo should make this actually useful one day, parsing values etc
 // tslint:disable-next-line:max-classes-per-file
 export class Argument {
     public readonly name: string;

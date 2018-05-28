@@ -1,5 +1,4 @@
 import {Message} from "discord.js";
-import {isObject} from "util";
 import {Database, Entry} from "../db";
 import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
@@ -17,7 +16,7 @@ export = class Talent extends Command {
         super("talent", [new Argument("talent")]);
     }
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(nameToId(args[0]));
+        const talent = escapeRegex(args.join("_"));
         const data = await Database.Data.collection("talents").findOne<ITalent>({_id: {$regex: talent, $options: "i"}});
 
         if (data == null) {
