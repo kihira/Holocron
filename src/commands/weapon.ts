@@ -1,9 +1,8 @@
 import {Message} from "discord.js";
-import {isString} from "util";
 import {Database, Entry} from "../db";
+import {EmojiCache} from "../emoji";
 import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
-import {EmojiCache} from "../emoji";
 
 interface IWeapon extends Entry {
     category: string;
