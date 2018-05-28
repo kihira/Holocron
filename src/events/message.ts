@@ -1,8 +1,6 @@
 import { Message } from "discord.js";
 import { Commands } from "../commands";
 import { PermissionLevel } from "../commands/command";
-import { Database } from "../db";
-import { IGuildSettings } from "../IGuildSettings";
 import { GuildSettings } from "../settings";
 
 export = async (message: Message) => {
@@ -16,6 +14,12 @@ export = async (message: Message) => {
         await message.reply(`Unknown command \`${split[0].slice(1)}\``);
         return;
     }
+
+    // Reload the command if we're in a dev environment for faster development
+    if (process.env.NODE_ENV === "development") {
+        await Commands.reloadCommand(cmd);
+    }
+
     // Check permissions
     if (cmd.permissionLevel !== PermissionLevel.ALL) {
         switch (cmd.permissionLevel) {
@@ -37,7 +41,7 @@ export = async (message: Message) => {
     }
     // Checks args
     const args = split.slice(1);
-    if (cmd.arguments !== undefined && cmd.arguments.length !== args.length) {
+    if (cmd.arguments !== undefined && cmd.arguments.length > args.length) { // quick and dirty hack for now
         await message.reply("Invalid number of arguments"); // todo show help for cmd
     }
     else await cmd.run(message, split.slice(1));

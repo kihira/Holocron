@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
 import {Database, Entry} from "../db";
-import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex} from "../util";
 import {Argument, Command} from "./command";
 
 interface ICareer extends Entry {
@@ -13,10 +13,9 @@ export = class Quality extends Command {
     constructor() {
         super("career", [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("careers")
-            .find<ICareer>({name: {$regex: talent, $options: "i"}}).limit(1).next();
+    public async run(message: Message, args: string[]) {
+        const talent = escapeRegex(args[0]);
+        const data = await Database.Data.collection("careers").findOne<ICareer>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.channel.send("No career found");

@@ -1,9 +1,8 @@
 import {Message} from "discord.js";
-import {isString} from "util";
 import {Database, Entry} from "../db";
+import {EmojiCache} from "../emoji";
 import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
 import {Argument, Command} from "./command";
-import {EmojiCache} from "../emoji";
 
 interface IWeapon extends Entry {
     category: string;
@@ -26,8 +25,8 @@ export = class Weapon extends Command {
     constructor() {
         super(["weapon", "weapons"], [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
-        const talent = escapeRegex(nameToId(args[0]));
+    public async run(message: Message, args: string[]) {
+        const talent = escapeRegex(args.join(" "));
         const data = await Database.Data.collection("weapons").findOne<IWeapon>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {

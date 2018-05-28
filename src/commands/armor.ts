@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
 import {Database, Entry} from "../db";
-import {createEmbed, escapeRegex, nameToId} from "../util";
+import {createEmbed, escapeRegex} from "../util";
 import {Argument, Command} from "./command";
 
 interface IArmor extends Entry {
@@ -20,10 +20,9 @@ export = class Armor extends Command {
     constructor() {
         super(["armor", "armour"], [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("armor")
-            .findOne<IArmor>({name: {$regex: talent, $options: "i"}});
+    public async run(message: Message, args: string[]) {
+        const talent = escapeRegex(args.join(" "));
+        const data = await Database.Data.collection("armor").findOne<IArmor>({name: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.channel.send("No armor found");

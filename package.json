@@ -16,11 +16,11 @@
     "winston": "github:winstonjs/winston"
   },
   "devDependencies": {
-    "typescript": "^2.8.3",
-    "tslint": "^5.10.0",
     "@types/dotenv": "^4.0.3",
-    "@types/node": "^10.1.2",
     "@types/lodash": "^4.14.109",
-    "@types/mongodb": "^3.0.18"
-    }
+    "@types/mongodb": "^3.0.18",
+    "@types/node": "^10.1.2",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  }
 }

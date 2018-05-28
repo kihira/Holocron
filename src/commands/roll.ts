@@ -107,7 +107,7 @@ export = class Roll extends Command {
         super(["roll", "r"], [new Argument("dice")]);
     }
 
-    public async init(client: Client): Promise<void> {
+    public async init(client: Client) {
         if (process.env.EMOJI_GUILD === undefined) {
             logger.error("Emoji guild not defined, emoji's will not work");
             return;
@@ -119,7 +119,7 @@ export = class Roll extends Command {
         }
     }
 
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const diceResults: DieSide[] = [];
 
         for (const arg of args) {

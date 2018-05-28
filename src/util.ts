@@ -1,7 +1,7 @@
-import {defaultTo} from "lodash";
-import {EmojiCache} from "./emoji";
 import {Message, RichEmbed} from "discord.js";
+import {defaultTo} from "lodash";
 import {Entry} from "./db";
+import {EmojiCache} from "./emoji";
 
 export function escapeRegex(str: string): string {
     return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
