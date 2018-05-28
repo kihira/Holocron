@@ -16,10 +16,9 @@ export = class Talent extends Command {
     constructor() {
         super("talent", [new Argument("talent")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("talents")
-            .find<ITalent>({_id: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("talents").findOne<ITalent>({_id: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.reply("No talent found");
@@ -47,6 +46,6 @@ export = class Talent extends Command {
             embed.addField("Activation", value, true);
         }
 
-        await message.channel.send({embed});
+        await message.channel.send(embed);
     }
 };

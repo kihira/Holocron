@@ -6,7 +6,7 @@ export = class ReloadEvent extends Command {
     constructor() {
         super("reloadevent", [new Argument("event")], PermissionLevel.BOT_ADMIN);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const eventName = args[0];
         try {
             delete require.cache[require.resolve(`../events/${eventName}.js`)];

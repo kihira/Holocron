@@ -26,7 +26,7 @@ export = class Adversary extends Command {
     constructor() {
         super(["adversary", "adversaries"], [new Argument("adversary")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const adversary = escapeRegex(args[0]);
         const data = await Database.Data.collection("adversaries").findOne<IAdversary>({name: {$regex: adversary, $options: "i"}});
 

@@ -13,10 +13,9 @@ export = class Armor extends Command {
     constructor() {
         super(["specialization", "specialisation", "spec"], [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("specializations")
-            .find<ISpecialization>({name: {$regex: talent, $options: "i"}}).limit(1).next();
+        const data = await Database.Data.collection("specializations").findOne<ISpecialization>({_id: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.channel.send("No armor found");
@@ -26,9 +25,6 @@ export = class Armor extends Command {
         const embed = createEmbed(message, data, "specializations");
         embed.addField("Skills", data.skills.map((value) => idToName(value)).join(" ,"));
         // embed.addField("Tree", data.tree); // todo
-        if (process.env.DATA_URL !== undefined) {
-            embed.setURL(process.env.DATA_URL + "/specializations/" + data._id);
-        }
 
         await message.channel.send(embed);
     }

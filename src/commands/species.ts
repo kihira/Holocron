@@ -20,10 +20,9 @@ export = class Species extends Command {
     constructor() {
         super("species", [new Argument("species")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]) {
         const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("species")
-            .findOne<ISpecies>({_id: {$regex: talent, $options: "i"}});
+        const data = await Database.Data.collection("species").findOne<ISpecies>({_id: {$regex: talent, $options: "i"}});
 
         if (data == null) {
             await message.reply("No Species found");
@@ -47,6 +46,6 @@ export = class Species extends Command {
             embed.addField("Starting XP", playerData.xp, true);
         }
 
-        await message.channel.send({embed});
+        await message.channel.send(embed);
     }
 };

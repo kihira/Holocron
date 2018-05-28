@@ -1,8 +1,6 @@
 import { Message } from "discord.js";
 import { Commands } from "../commands";
 import { PermissionLevel } from "../commands/command";
-import { Database } from "../db";
-import { IGuildSettings } from "../IGuildSettings";
 import { GuildSettings } from "../settings";
 
 export = async (message: Message) => {
@@ -16,6 +14,12 @@ export = async (message: Message) => {
         await message.reply(`Unknown command \`${split[0].slice(1)}\``);
         return;
     }
+
+    // Reload the command if we're in a dev environment for faster development
+    if (process.env.NODE_ENV === "development") {
+        await Commands.reloadCommand(cmd);
+    }
+
     // Check permissions
     if (cmd.permissionLevel !== PermissionLevel.ALL) {
         switch (cmd.permissionLevel) {

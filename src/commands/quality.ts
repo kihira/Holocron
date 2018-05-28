@@ -14,10 +14,9 @@ export = class Quality extends Command {
     constructor() {
         super(["quality", "qualities", "special"], [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]): Promise<void> {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("quality")
-            .find<IQuality>({name: {$regex: talent, $options: "i"}}).limit(1).next();
+    public async run(message: Message, args: string[]) {
+        const arg = escapeRegex(nameToId(args[0]));
+        const data = await Database.Data.collection("quality").findOne<IQuality>({_id: {$regex: arg, $options: "i"}});
 
         if (data == null) {
             await message.channel.send("No quality found");
