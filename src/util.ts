@@ -42,7 +42,7 @@ export function createEmbed(message: Message, data: Entry, endpoint?: string, na
     const embed = new RichEmbed();
     embed.setTitle(name || idToName(data._id as string));
     embed.setAuthor(message.member.displayName, message.author.avatarURL);
-    if (data.description) embed.setDescription(data.description);
+    if (data.description) embed.setDescription(format(data.description));
     embed.setFooter(data.index.join(", "));
     embed.setColor("DARK_RED");
     if (data.image !== undefined) {
