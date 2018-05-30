@@ -66,6 +66,10 @@ export async function findOne<T extends Entry>(collection: Collection, filter: F
 
         // Send choice message and collect reactions
         const selectorMessage = await message.channel.send(contents) as Message;
+        for (const emoji of emojiToResult.keys()) {
+            // TODO best way of doing this? might do too many API calls
+            await selectorMessage.react(emoji);
+        }
         const reactions = await selectorMessage.awaitReactions((reaction, user) => user.id === message.author.id, { time: 10, max: 1 });
 
         // Remove selection message and parse results
