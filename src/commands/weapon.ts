@@ -1,7 +1,7 @@
 import {Client, Collection, Emoji, Message} from "discord.js";
 import {Database, Entry, findOne} from "../db";
 import {EmojiCache} from "../emoji";
-import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, idToName} from "../util";
 import {Argument, Command} from "./command";
 
 interface IWeapon extends Entry {

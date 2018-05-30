@@ -1,5 +1,5 @@
 import { ObjectID } from "bson";
-import { Message } from "discord.js";
+import {Message, MessageReaction} from "discord.js";
 import { Collection, Db, FilterQuery, MongoClient } from "mongodb";
 import { logger } from "./logger";
 import { idToName } from "./util";
@@ -33,10 +33,6 @@ export interface Entry {
     name?: string;
 }
 
-const choiceEmojis: string[] = [
-    "🇦", "🇧", "🇨", "🇩", "🇪",
-];
-
 /**
  * A function that search the collection based on the filter.
  * If multiple results are returned, the user is prompted to select a choice and that choice is returned
@@ -47,7 +43,7 @@ const choiceEmojis: string[] = [
  */
 export async function findOne<T extends Entry>(collection: Collection, filter: FilterQuery<T>, message: Message): Promise<T | undefined> {
     const results = await collection.find<T>(filter).limit(5);
-    const count = await results.count();
+    const count = await results.count(true);
 
     if (count === 0) {
         return undefined;
@@ -55,34 +51,54 @@ export async function findOne<T extends Entry>(collection: Collection, filter: F
     // Multiple results
     else if (count > 1) {
         // Map results to emoji reactions and build message
-        const emojiToResult = new Map<string, T>();
-        let contents = `${count} results found, please select one:\n`;
+        const choices: T[] = [];
+        let contents = `${count} results found, please type out the number for your selection:\n\n`;
         for (let i = 0; i < count; i++) {
             const value = await results.next();
-            emojiToResult.set(choiceEmojis[i], value);
-            const name = value.name ? value.name : idToName(value._id as string);
-            contents += `${choiceEmojis[i]} ${name}\n`;
+            choices.push(value);
+            contents += `**${i + 1}**: ${value.name ? value.name : idToName(value._id as string)}\n`;
         }
 
         // Send choice message and collect reactions
         const selectorMessage = await message.channel.send(contents) as Message;
-        for (const emoji of emojiToResult.keys()) {
-            // TODO best way of doing this? might do too many API calls
-            await selectorMessage.react(emoji);
-        }
-        const reactions = await selectorMessage.awaitReactions((reaction, user) => user.id === message.author.id, { time: 10, max: 1 });
 
-        // Remove selection message and parse results
-        if (selectorMessage.deletable) {
-            await selectorMessage.delete();
+        // todo this seems a bit messy, clean up?
+        try {
+            // Prompt user to choose selection
+            // split into a class?
+            return await new Promise<T>((resolve, reject) => {
+                const timeout = message.client.setTimeout(() => {
+                        message.client.removeListener("message", listener);
+                        reject("Selection timed out");
+                    }
+                    , 10000);
+                const listener = (msg: Message) => {
+                    if (msg.author.id === message.author.id && msg.channel.id === message.channel.id) {
+                        message.client.removeListener("message", listener);
+                        message.client.clearTimeout(timeout);
+
+                        // Check if the selection is valid
+                        const selection = parseInt(msg.content, 10);
+                        if (!isNaN(selection) && selection <= choices.length && selection > 0) {
+                            msg.delete();
+                            resolve(choices[selection - 1]);
+                        }
+                        else reject("Invalid selection");
+                    }
+                };
+                message.client.on("message", listener);
+            });
+        } catch (reason) {
+            message.channel.send(reason);
+        } finally {
+            // Remove selection message
+            if (selectorMessage.deletable) {
+                await selectorMessage.delete();
+            }
         }
-        if (reactions.size === 0) {
-            await message.channel.send("Option selection timed out");
-            return undefined;
-        }
-        // todo set data to the one that was selected
-        return emojiToResult.get("");
+
+        return undefined;
     }
-    // One result
+// One result
     return results.next();
 }
