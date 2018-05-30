@@ -1,7 +1,7 @@
-import {Message} from "discord.js";
-import {Database, Entry} from "../db";
+import {Client, Collection, Emoji, Message} from "discord.js";
+import {Database, Entry, findOne} from "../db";
 import {EmojiCache} from "../emoji";
-import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
+import {createEmbed, escapeRegex, idToName} from "../util";
 import {Argument, Command} from "./command";
 
 interface IWeapon extends Entry {
@@ -23,14 +23,14 @@ interface IWeapon extends Entry {
 
 export = class Weapon extends Command {
     constructor() {
-        super(["weapon", "weapons"], [new Argument("name")]);
+        super(["weapon", "weapons", "w"], [new Argument("name")]);
     }
-    public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args.join(" "));
-        const data = await Database.Data.collection("weapons").findOne<IWeapon>({name: {$regex: talent, $options: "i"}});
 
-        if (data == null) {
-            await message.channel.send("No weapon found");
+    public async run(message: Message, args: string[]) {
+        const search = escapeRegex(args.join(" "));
+        const data = await findOne<IWeapon>(Database.Data.collection("weapons"), {name: {$regex: search, $options: "i"}}, message);
+        if (data === undefined) {
+            message.channel.send("No weapons found");
             return;
         }
 
