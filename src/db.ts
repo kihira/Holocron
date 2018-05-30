@@ -80,7 +80,9 @@ export async function findOne<T extends Entry>(collection: Collection, filter: F
                         // Check if the selection is valid
                         const selection = parseInt(msg.content, 10);
                         if (!isNaN(selection) && selection <= choices.length && selection > 0) {
-                            msg.delete();
+                            if (msg.deletable) {
+                                msg.delete();
+                            }
                             resolve(choices[selection - 1]);
                         }
                         else reject("Invalid selection");
