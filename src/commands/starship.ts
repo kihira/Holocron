@@ -1,6 +1,6 @@
 import { Message, RichEmbed } from "discord.js";
 import { Database, Entry } from "../db";
-import {createEmbed, escapeRegex} from "../util";
+import { createEmbed, escapeRegex } from "../util";
 import { Argument, Command } from "./command";
 
 interface IDefense {
@@ -49,7 +49,12 @@ export = class Starship extends Command {
 
     public async run(message: Message, args: string[]) {
         const name = escapeRegex(args[0]);
-        const data = await Database.Data.collection("starships").findOne<IStarship>({name: {$regex: name, $options: "i"}});
+        const data = await Database.Data.collection("starships").findOne<IStarship>({
+            name: {
+                $regex: name,
+                $options: "i",
+            },
+        });
 
         if (data == null) {
             await message.channel.send("No starship found");

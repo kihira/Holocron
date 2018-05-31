@@ -1,8 +1,8 @@
-import {Client, Collection} from "discord.js";
-import {readdir} from "fs";
-import {promisify} from "util";
-import {Command} from "./commands/command";
-import {logger} from "./logger";
+import { Client, Collection } from "discord.js";
+import { readdir } from "fs";
+import { promisify } from "util";
+import { Command } from "./commands/command";
+import { logger } from "./logger";
 
 class CommandRegistry {
     private commands: Collection<string, Command> = new Collection<string, Command>();

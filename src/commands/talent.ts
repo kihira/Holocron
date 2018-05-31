@@ -1,20 +1,21 @@
-import {Message} from "discord.js";
-import {Database, Entry} from "../db";
-import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
-import {Argument, Command} from "./command";
+import { Message } from "discord.js";
+import { Database, Entry } from "../db";
+import { createEmbed, escapeRegex, idToName, nameToId } from "../util";
+import { Argument, Command } from "./command";
 
 interface ITalent extends Entry {
     _id: string;
     force: boolean;
     ranked: boolean;
     short?: string;
-    activation: boolean | {Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean};
+    activation: boolean | { Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean };
 }
 
 export = class Talent extends Command {
     constructor() {
         super("talent", [new Argument("talent")]);
     }
+
     public async run(message: Message, args: string[]) {
         const talent = escapeRegex(args.join("_"));
         const data = await Database.Data.collection("talents").findOne<ITalent>({_id: {$regex: talent, $options: "i"}});

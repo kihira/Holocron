@@ -1,5 +1,5 @@
 import { ObjectID } from "bson";
-import {Message, MessageReaction} from "discord.js";
+import { Message } from "discord.js";
 import { Collection, Db, FilterQuery, MongoClient } from "mongodb";
 import { logger } from "./logger";
 import { idToName } from "./util";

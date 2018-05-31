@@ -1,6 +1,6 @@
 import { Client, Collection, Message, RichEmbed } from "discord.js";
 import { defaultTo, forIn, mergeWith } from "lodash";
-import {EmojiCache} from "../emoji";
+import { EmojiCache } from "../emoji";
 import { logger } from "../logger";
 import { defaultParse } from "../util";
 import { Argument, Command } from "./command";

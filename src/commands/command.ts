@@ -1,4 +1,4 @@
-import {Client, Message} from "discord.js";
+import { Client, Message } from "discord.js";
 
 export abstract class Command {
     public readonly name: string;
@@ -6,7 +6,7 @@ export abstract class Command {
     public readonly arguments: Argument[] | undefined;
     public readonly permissionLevel: PermissionLevel;
 
-    constructor(name: string | string[], args?: Argument[], permissionLevel: PermissionLevel = PermissionLevel.ALL) {
+    protected constructor(name: string | string[], args?: Argument[], permissionLevel: PermissionLevel = PermissionLevel.ALL) {
         if (typeof(name) === "string") {
             this.name = name;
         }
@@ -19,8 +19,10 @@ export abstract class Command {
     }
 
     public abstract async run(message: Message, args: string[]): Promise<void>;
+
     // tslint:disable-next-line:no-empty
-    public async init(client: Client): Promise<void> {}
+    public async init(client: Client): Promise<void> {
+    }
 }
 
 export enum PermissionLevel {
