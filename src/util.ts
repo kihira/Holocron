@@ -58,3 +58,19 @@ export function createEmbed(message: Message, data: Entry, endpoint?: string, na
     }
     return embed;
 }
+
+export function formatTime(time: number): string {
+    const timeInSec = time / 1000;
+    const sec = Math.floor(timeInSec % 60);
+    const min = Math.floor(timeInSec / 60);
+    const hr = Math.floor(min / 60);
+    const days = Math.floor(hr / 24);
+
+    let out = "";
+    if (days > 0) out += `${days} days `;
+    if (hr > 0) out += `${hr} hours `;
+    if (min > 0) out += `${min} mins `;
+    if (sec > 0) out += `${sec} secs`;
+
+    return out;
+}
