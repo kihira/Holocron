@@ -1,11 +1,12 @@
-import {Message} from "discord.js";
-import {logger} from "../logger";
-import {Argument, Command, PermissionLevel} from "./command";
+import { Message } from "discord.js";
+import { logger } from "../logger";
+import { Argument, Command, PermissionLevel } from "./command";
 
 export = class ReloadEvent extends Command {
     constructor() {
         super("reloadevent", [new Argument("event")], PermissionLevel.BOT_ADMIN);
     }
+
     public async run(message: Message, args: string[]) {
         const eventName = args[0];
         try {

@@ -1,26 +1,32 @@
-import {Message} from "discord.js";
-import {Database, Entry} from "../db";
-import {createEmbed, escapeRegex, idToName, nameToId} from "../util";
-import {Argument, Command} from "./command";
+import { Message } from "discord.js";
+import { Database, Entry, findOne } from "../db";
+import { createEmbed, escapeRegex, idToName } from "../util";
+import { Argument, Command } from "./command";
 
 interface ITalent extends Entry {
     _id: string;
     force: boolean;
     ranked: boolean;
     short?: string;
-    activation: boolean | {Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean};
+    activation: boolean | { Action?: boolean, Incidental?: boolean, Out_Of_Turn?: boolean };
 }
 
 export = class Talent extends Command {
     constructor() {
         super("talent", [new Argument("talent")]);
     }
-    public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args.join("_"));
-        const data = await Database.Data.collection("talents").findOne<ITalent>({_id: {$regex: talent, $options: "i"}});
 
-        if (data == null) {
-            await message.reply("No talent found");
+    public async run(message: Message, args: string[]) {
+        const search = escapeRegex(args.join("_"));
+        const data = await findOne<ITalent>(Database.Data.collection("talents"), {
+            _id: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
+
+        if (data === undefined) {
+            await message.channel.send("No talent found");
             return;
         }
 

@@ -457,9 +457,9 @@ winston-transport@^4.0.0:
   dependencies:
     triple-beam "^1.2.0"
 
-"winston@github:winstonjs/winston":
-  version "3.0.0-rc5"
-  resolved "https://codeload.github.com/winstonjs/winston/tar.gz/502a8289df5c39f8e8373a04dde963c19a002c4e"
+winston@^3.0.0-rc6:
+  version "3.0.0-rc6"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.0.0-rc6.tgz#f6a0417be6cc2fe5c9a64fbb698e8da674cdf26a"
   dependencies:
     async "^2.6.0"
     diagnostics "^1.0.1"

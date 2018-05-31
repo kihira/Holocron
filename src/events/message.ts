@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { Commands } from "../commands";
 import { PermissionLevel } from "../commands/command";
+import { logger } from "../logger";
 import { GuildSettings } from "../settings";
 
 export = async (message: Message) => {
@@ -11,7 +12,7 @@ export = async (message: Message) => {
     const split = message.content.split(/ +/g);
     const cmd = Commands.get(split[0].slice(1));
     if (cmd === undefined) {
-        await message.reply(`Unknown command \`${split[0].slice(1)}\``);
+        logger.verbose(`Unknown command: ${split[0].slice(1)}`);
         return;
     }
 

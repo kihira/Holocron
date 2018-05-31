@@ -2,9 +2,6 @@ import { Guild } from "discord.js";
 import { Database } from "./db";
 import { IGuildSettings } from "./IGuildSettings";
 
-// Bot settings
-export const userBotRatioThreshold: number = 10;
-
 // TODO see if we can't merge Guild class declerations with our own so we can just store it on the object itself.
 // Ideally without too many hacks
 class Settings {

@@ -1,8 +1,8 @@
-import {Client, Collection, Emoji, Message} from "discord.js";
-import {Database, Entry, findOne} from "../db";
-import {EmojiCache} from "../emoji";
-import {createEmbed, escapeRegex, idToName} from "../util";
-import {Argument, Command} from "./command";
+import { Client, Collection, Emoji, Message } from "discord.js";
+import { Database, Entry, findOne } from "../db";
+import { EmojiCache } from "../emoji";
+import { createEmbed, escapeRegex, idToName } from "../util";
+import { Argument, Command } from "./command";
 
 interface IWeapon extends Entry {
     category: string;
@@ -18,7 +18,7 @@ interface IWeapon extends Entry {
     rarity: number;
     restricted: boolean;
     skill: string;
-    special: Array<string | {id: string, value: number}>;
+    special: Array<string | { id: string, value: number }>;
 }
 
 export = class Weapon extends Command {
@@ -28,7 +28,13 @@ export = class Weapon extends Command {
 
     public async run(message: Message, args: string[]) {
         const search = escapeRegex(args.join(" "));
-        const data = await findOne<IWeapon>(Database.Data.collection("weapons"), {name: {$regex: search, $options: "i"}}, message);
+        const data = await findOne<IWeapon>(Database.Data.collection("weapons"), {
+            name: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
+
         if (data === undefined) {
             message.channel.send("No weapons found");
             return;
@@ -46,18 +52,6 @@ export = class Weapon extends Command {
 
         embed.addField("Category", data.category, true);
         embed.addField("Skill", data.skill, true);
-
-/*        embed.addField("Damage", data.damage, true);
-        embed.addField("Critical", data.critical === "-" ? "-" : EmojiCache.get("advantage").repeat(data.critical), true);
-        embed.addField("Skill", data.skill, true);
-
-        embed.addField("Description", `
-**Category:** ${data.category}
-**Price:** ${data.price.toLocaleString() + (data.restricted ? " (R)" : "")}
-**Rarity:** ${data.rarity}
-**Encumbrance:** ${data.encumbrance}
-**Hard Points:** ${data.hardpoints}
-        `);*/
 
         if (data.special) {
             embed.addField("Special", data.special.map((element) => typeof (element) === "string" ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));

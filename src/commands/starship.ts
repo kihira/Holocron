@@ -1,31 +1,27 @@
 import { Message, RichEmbed } from "discord.js";
-import { Database, Entry } from "../db";
-import {createEmbed, escapeRegex} from "../util";
+import { Database, Entry, findOne } from "../db";
+import { createEmbed, escapeRegex } from "../util";
 import { Argument, Command } from "./command";
-
-interface IDefense {
-    aft: number;
-    fore: number;
-    port?: number;
-    starboard?: number;
-}
-
-interface IHyperdrive {
-    primary: number;
-    secondary?: number;
-}
 
 interface IStarship extends Entry {
     armor: number;
     category: string;
     consumables: string;
     crew: string[];
-    defense: IDefense;
+    defense: {
+        aft: number;
+        fore: number;
+        port?: number;
+        starboard?: number;
+    };
     encumbrance: number;
     handling: number;
     hardpoints: number;
     hull: number;
-    hyperdrive?: IHyperdrive;
+    hyperdrive?: {
+        primary: number;
+        secondary?: number;
+    };
     manufacturer: string;
     model: string;
     name: string;
@@ -48,10 +44,15 @@ export = class Starship extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const name = escapeRegex(args[0]);
-        const data = await Database.Data.collection("starships").findOne<IStarship>({name: {$regex: name, $options: "i"}});
+        const search = escapeRegex(args[0]);
+        const data = await findOne<IStarship>(Database.Data.collection("starships"), {
+            name: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
 
-        if (data == null) {
+        if (data === undefined) {
             await message.channel.send("No starship found");
             return;
         }

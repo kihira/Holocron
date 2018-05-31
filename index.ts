@@ -1,11 +1,11 @@
-import {Client} from "discord.js";
+import { Client } from "discord.js";
 import * as dotenv from "dotenv";
-import {readdir} from "fs";
-import {promisify} from "util";
-import {Commands} from "./src/commands";
-import {Database} from "./src/db";
-import {EmojiCache} from "./src/emoji";
-import {logger} from "./src/logger";
+import { readdir } from "fs";
+import { promisify } from "util";
+import { Commands } from "./src/commands";
+import { Database } from "./src/db";
+import { EmojiCache } from "./src/emoji";
+import { logger } from "./src/logger";
 
 const client = new Client();
 
@@ -39,7 +39,7 @@ const init = async () => {
     }
 
     // Set status
-    await client.user.setPresence({game: {name: "Star Wars RPG"} });
+    await client.user.setPresence({game: {name: "Star Wars RPG"}});
 };
 
 init();

@@ -1,8 +1,8 @@
-import {Message, RichEmbed} from "discord.js";
-import {ICharacteristics} from "../characteristics";
-import {Database, Entry} from "../db";
-import {createEmbed, escapeRegex, format, idToName, nameToId} from "../util";
-import {Argument, Command} from "./command";
+import { Message, RichEmbed } from "discord.js";
+import { ICharacteristics } from "../characteristics";
+import { Database, Entry, findOne } from "../db";
+import { createEmbed, escapeRegex, format, idToName, nameToId } from "../util";
+import { Argument, Command } from "./command";
 
 interface ISpecies extends Entry {
     _id: string;
@@ -20,12 +20,18 @@ export = class Species extends Command {
     constructor() {
         super("species", [new Argument("species")]);
     }
-    public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("species").findOne<ISpecies>({_id: {$regex: talent, $options: "i"}});
 
-        if (data == null) {
-            await message.reply("No Species found");
+    public async run(message: Message, args: string[]) {
+        const search = escapeRegex(nameToId(args[0]));
+        const data = await findOne<ISpecies>(Database.Data.collection("species"), {
+            _id: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
+
+        if (data === undefined) {
+            await message.channel.send("No species found");
             return;
         }
 
