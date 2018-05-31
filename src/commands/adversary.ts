@@ -1,7 +1,7 @@
 import { ObjectID } from "bson";
 import { Message } from "discord.js";
 import { ICharacteristics } from "../characteristics";
-import { Database, Entry } from "../db";
+import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex, idToName } from "../util";
 import { Argument, Command } from "./command";
 
@@ -28,13 +28,13 @@ export = class Adversary extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const adversary = escapeRegex(args[0]);
-        const data = await Database.Data.collection("adversaries").findOne<IAdversary>({
+        const search = escapeRegex(args[0]);
+        const data = await findOne<IAdversary>(Database.Data.collection("adversaries"), {
             name: {
-                $regex: adversary,
                 $options: "i",
+                $regex: search,
             },
-        });
+        }, message);
 
         if (data == null) {
             await message.reply("No adversary found");

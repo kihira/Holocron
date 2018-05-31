@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { Database, Entry } from "../db";
-import { createEmbed, escapeRegex, idToName, nameToId } from "../util";
+import { Database, Entry, findOne } from "../db";
+import { createEmbed, escapeRegex, idToName } from "../util";
 import { Argument, Command } from "./command";
 
 interface ITalent extends Entry {
@@ -17,11 +17,16 @@ export = class Talent extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(args.join("_"));
-        const data = await Database.Data.collection("talents").findOne<ITalent>({_id: {$regex: talent, $options: "i"}});
+        const search = escapeRegex(args.join("_"));
+        const data = await findOne<ITalent>(Database.Data.collection("talents"), {
+            _id: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
 
-        if (data == null) {
-            await message.reply("No talent found");
+        if (data === undefined) {
+            await message.channel.send("No talent found");
             return;
         }
 

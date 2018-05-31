@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { Database, Entry } from "../db";
+import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex, nameToId } from "../util";
 import { Argument, Command } from "./command";
 
@@ -16,10 +16,15 @@ export = class Quality extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const arg = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("quality").findOne<IQuality>({_id: {$regex: arg, $options: "i"}});
+        const search = escapeRegex(nameToId(args[0]));
+        const data = await findOne<IQuality>(Database.Data.collection("quality"), {
+            _id: {
+                $options: "i",
+                $regex: search,
+            },
+        }, message);
 
-        if (data == null) {
+        if (data === undefined) {
             await message.channel.send("No quality found");
             return;
         }

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { Database, Entry } from "../db";
+import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex, idToName, nameToId } from "../util";
 import { Argument, Command } from "./command";
 
@@ -15,15 +15,15 @@ export = class Armor extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("specializations").findOne<ISpecialization>({
+        const search = escapeRegex(nameToId(args[0]));
+        const data = await findOne<ISpecialization>(Database.Data.collection("specializations"), {
             _id: {
-                $regex: talent,
                 $options: "i",
+                $regex: search,
             },
-        });
+        }, message);
 
-        if (data == null) {
+        if (data === undefined) {
             await message.channel.send("No armor found");
             return;
         }

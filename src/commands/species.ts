@@ -1,6 +1,6 @@
 import { Message, RichEmbed } from "discord.js";
 import { ICharacteristics } from "../characteristics";
-import { Database, Entry } from "../db";
+import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex, format, idToName, nameToId } from "../util";
 import { Argument, Command } from "./command";
 
@@ -22,16 +22,16 @@ export = class Species extends Command {
     }
 
     public async run(message: Message, args: string[]) {
-        const talent = escapeRegex(nameToId(args[0]));
-        const data = await Database.Data.collection("species").findOne<ISpecies>({
+        const search = escapeRegex(nameToId(args[0]));
+        const data = await findOne<ISpecies>(Database.Data.collection("species"), {
             _id: {
-                $regex: talent,
                 $options: "i",
+                $regex: search,
             },
-        });
+        }, message);
 
-        if (data == null) {
-            await message.reply("No Species found");
+        if (data === undefined) {
+            await message.channel.send("No species found");
             return;
         }
 

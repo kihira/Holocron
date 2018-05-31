@@ -30,10 +30,11 @@ export = class Weapon extends Command {
         const search = escapeRegex(args.join(" "));
         const data = await findOne<IWeapon>(Database.Data.collection("weapons"), {
             name: {
-                $regex: search,
                 $options: "i",
+                $regex: search,
             },
         }, message);
+
         if (data === undefined) {
             message.channel.send("No weapons found");
             return;
