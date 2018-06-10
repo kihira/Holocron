@@ -56,7 +56,8 @@ class CommandRegistry {
     private async loadCommand(name: string) {
         try {
             logger.info(`Loading command: ${name}`);
-            const cmd = require(`./commands/${name}`);
+            let cmd = require(`./commands/${name}`);
+            if (cmd.default != null) cmd = cmd.default;
             if (cmd.prototype instanceof Command) {
                 const obj = new cmd();
                 this.register(obj);
