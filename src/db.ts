@@ -11,7 +11,7 @@ class Mongo {
 
     public async connect() {
         try {
-            this.client = await MongoClient.connect(process.env.MONGO_CONN || "mongodb://localhost:27017");
+            this.client = await MongoClient.connect(process.env.MONGO_CONN || "mongodb://localhost:27017", {useNewUrlParser: true});
             logger.info("Connected to Mongo");
 
             this.Data = this.client.db(process.env.DB_DATA || "data");
