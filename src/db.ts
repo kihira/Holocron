@@ -80,7 +80,7 @@ export async function findOne<T extends Entry>(collection: Collection, filter: F
                         const selection = parseInt(msg.content, 10);
                         if (!isNaN(selection) && selection <= choices.length && selection > 0) {
                             if (msg.deletable) {
-                                await msg.delete();
+                                msg.delete().catch(logger.error);
                             }
                             resolve({
                                 item: choices[selection - 1],
