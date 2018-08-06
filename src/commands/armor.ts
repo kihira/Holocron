@@ -35,15 +35,17 @@ export = class Armor extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "armor", data.name);
-        embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
-        embed.addField("Rarity", data.rarity, true);
-        embed.addField("Encumbrance", data.encumbrance, true);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "armor", item.name);
+        embed.addField("Price", item.price.toLocaleString() + (item.restricted ? " (R)" : ""), true);
+        embed.addField("Rarity", item.rarity, true);
+        embed.addField("Encumbrance", item.encumbrance, true);
 
-        embed.addField("Soak", data.soak, true);
-        embed.addField("Defense", data.defense, true);
-        embed.addField("Hard Points", data.hardpoints, true);
+        embed.addField("Soak", item.soak, true);
+        embed.addField("Defense", item.defense, true);
+        embed.addField("Hard Points", item.hardpoints, true);
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

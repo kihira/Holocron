@@ -57,42 +57,44 @@ export = class Starship extends Command {
             return;
         }
 
+        const {item, msg} = data;
         let hyperdrive = "None";
-        if (data.hyperdrive !== undefined) {
-            hyperdrive = `**Primary:** Class ${data.hyperdrive.primary}`;
-            if (data.hyperdrive.secondary !== undefined) {
-                hyperdrive += `, **Secondary:** Class ${data.hyperdrive.secondary}`;
+        if (item.hyperdrive !== undefined) {
+            hyperdrive = `**Primary:** Class ${item.hyperdrive.primary}`;
+            if (item.hyperdrive.secondary !== undefined) {
+                hyperdrive += `, **Secondary:** Class ${item.hyperdrive.secondary}`;
             }
         }
 
-        const embed = createEmbed(message, data, "starships", data.name);
-        embed.addField("Hull Type/Class", `${data.category}/${data.model}`, true);
-        embed.addField("Manufacturer", data.manufacturer, true); // todo combine manu/model as per book?
+        const embed = createEmbed(message, item, "starships", item.name);
+        embed.addField("Hull Type/Class", `${item.category}/${item.model}`, true);
+        embed.addField("Manufacturer", item.manufacturer, true); // todo combine manu/model as per book?
 
         embed.addField("Price/Rarity",
-            `${data.price.toLocaleString()}${data.restricted ? " (R)" : ""}/${data.rarity}`, true);
-        embed.addField("Encumbrance", data.encumbrance, true);
+            `${item.price.toLocaleString()}${item.restricted ? " (R)" : ""}/${item.rarity}`, true);
+        embed.addField("Encumbrance", item.encumbrance, true);
         embed.addField("Hyperdrive", hyperdrive, true);
 
-        embed.addField("Armor", data.armor, true);
-        embed.addField("Strain Threshold", data.strain, true);
-        embed.addField("Hull Threshold", data.hull, true);
+        embed.addField("Armor", item.armor, true);
+        embed.addField("Strain Threshold", item.strain, true);
+        embed.addField("Hull Threshold", item.hull, true);
 
-        embed.addField("Consumables", data.consumables, true);
-        embed.addField("Handling", data.handling, true);
-        embed.addField("NaviComputer", data.navicomputer, true);
+        embed.addField("Consumables", item.consumables, true);
+        embed.addField("Handling", item.handling, true);
+        embed.addField("NaviComputer", item.navicomputer, true);
 
-        embed.addField("Passengers", data.passengers, true);
-        embed.addField("Sensor", data.sensor, true);
-        embed.addField("Silhouette", data.silhouette, true);
+        embed.addField("Passengers", item.passengers, true);
+        embed.addField("Sensor", item.sensor, true);
+        embed.addField("Silhouette", item.silhouette, true);
 
-        embed.addField("Handling", data.handling, true);
-        embed.addField("Speed", data.speed, true);
-        embed.addField("Defense", data.defense, true); // todo
+        embed.addField("Handling", item.handling, true);
+        embed.addField("Speed", item.speed, true);
+        embed.addField("Defense", item.defense, true); // todo
 
-        embed.addField("Crew", data.crew);
-        embed.addField("Weapons", data.weapons);
+        embed.addField("Crew", item.crew);
+        embed.addField("Weapons", item.weapons);
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

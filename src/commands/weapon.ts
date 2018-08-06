@@ -1,5 +1,5 @@
 import { Client, Collection, Emoji, Message } from "discord.js";
-import { Database, Entry, findOne } from "../db";
+import { Database, Entry, findOne, SelectorResult } from "../db";
 import { EmojiCache } from "../emoji";
 import { createEmbed, escapeRegex, idToName } from "../util";
 import { Argument, Command } from "./command";
@@ -40,23 +40,25 @@ export = class Weapon extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "weapons", data.name);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "weapons", item.name);
 
-        embed.addField("Damage", data.damage, true);
-        embed.addField("Critical", data.critical === "-" ? "-" : EmojiCache.get("advantage").repeat(data.critical), true);
-        embed.addField("Hard Points", data.hardpoints, true);
+        embed.addField("Damage", item.damage, true);
+        embed.addField("Critical", item.critical === "-" ? "-" : EmojiCache.get("advantage").repeat(item.critical), true);
+        embed.addField("Hard Points", item.hardpoints, true);
 
-        embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
-        embed.addField("Rarity", data.rarity, true);
-        embed.addField("Encumbrance", data.encumbrance, true);
+        embed.addField("Price", item.price.toLocaleString() + (item.restricted ? " (R)" : ""), true);
+        embed.addField("Rarity", item.rarity, true);
+        embed.addField("Encumbrance", item.encumbrance, true);
 
-        embed.addField("Category", data.category, true);
-        embed.addField("Skill", data.skill, true);
+        embed.addField("Category", item.category, true);
+        embed.addField("Skill", item.skill, true);
 
-        if (data.special) {
-            embed.addField("Special", data.special.map((element) => typeof (element) === "string" ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
+        if (item.special) {
+            embed.addField("Special", item.special.map((element) => typeof (element) === "string" ? idToName(element) : `${idToName(element.id)} ${element.value}`).join(", "));
         }
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

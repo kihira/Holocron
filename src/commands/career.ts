@@ -28,10 +28,12 @@ export = class Quality extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "careers");
-        embed.addField("Skills", data.skills.join(" ,"));
-        embed.addField("Specializations", data.specializations.join(" ,"));
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "careers");
+        embed.addField("Skills", item.skills.join(" ,"));
+        embed.addField("Specializations", item.specializations.join(" ,"));
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

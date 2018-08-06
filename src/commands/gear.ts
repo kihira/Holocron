@@ -33,13 +33,15 @@ export = class Gear extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "gear", data.name);
-        embed.addField("Category", data.category);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "gear", item.name);
+        embed.addField("Category", item.category);
 
-        embed.addField("Price", data.price.toLocaleString() + (data.restricted ? " (R)" : ""), true);
-        embed.addField("Rarity", data.rarity, true);
-        embed.addField("Encumbrance", data.encumbrance, true);
+        embed.addField("Price", item.price.toLocaleString() + (item.restricted ? " (R)" : ""), true);
+        embed.addField("Rarity", item.rarity, true);
+        embed.addField("Encumbrance", item.encumbrance, true);
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

@@ -28,10 +28,12 @@ export = class Armor extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "specializations");
-        embed.addField("Skills", data.skills.map((value) => idToName(value)).join(" ,"));
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "specializations");
+        embed.addField("Skills", item.skills.map((value) => idToName(value)).join(" ,"));
         // embed.addField("Tree", data.tree); // todo
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };
