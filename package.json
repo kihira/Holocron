@@ -7,20 +7,21 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "discord.js": "^11.3.2",
-    "dotenv": "^6.0.0",
+    "discord.js": "11.4.2",
+    "dotenv": "6.2.0",
     "erlpack": "discordapp/erlpack",
-    "lodash": "^4.17.10",
-    "mongodb": "^3.0.10",
-    "uws": "^9.14.0",
-    "winston": "^3.0.0-rc6"
+    "lodash": "4.17.11",
+    "mongodb": "3.1.10",
+    "prom-client": "11.2.1",
+    "uws": "9.14.0",
+    "winston": "3.1.0"
   },
   "devDependencies": {
-    "@types/dotenv": "^4.0.3",
-    "@types/lodash": "^4.14.109",
-    "@types/mongodb": "^3.0.19",
-    "@types/node": "^10.3.2",
-    "tslint": "^5.10.0",
-    "typescript": "^2.9.1"
+    "@types/dotenv": "6.1.0",
+    "@types/lodash": "4.14.119",
+    "@types/mongodb": "3.1.18",
+    "@types/node": "10.12.18",
+    "tslint": "5.12.0",
+    "typescript": "3.2.2"
   }
 }

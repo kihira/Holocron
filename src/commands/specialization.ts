@@ -3,10 +3,16 @@ import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex, idToName, nameToId } from "../util";
 import { Argument, Command } from "./command";
 
+interface CareerTree {
+    talents: string[][];
+    links: number[][];
+}
+
 interface ISpecialization extends Entry {
     _id: string;
-    skills: string[];
-    tree: { talents: string[][] };
+    base_skills: string[];
+    bonus_skills: string[];
+    tree: CareerTree;
 }
 
 export = class Armor extends Command {
@@ -24,14 +30,30 @@ export = class Armor extends Command {
         }, message);
 
         if (data === undefined) {
-            await message.channel.send("No armor found");
+            await message.channel.send("No specialisation found");
             return;
         }
 
         const embed = createEmbed(message, data, "specializations");
-        embed.addField("Skills", data.skills.map((value) => idToName(value)).join(" ,"));
-        // embed.addField("Tree", data.tree); // todo
+        embed.addField("Career Skills", data.base_skills.map((value) => idToName(value)).join(" ,"));
+        embed.addField(`${idToName(data._id)} Bonus Career Skills`, data.bonus_skills.map((value) => idToName(value)).join(" ,"));
+        const tree = `\`\`\`${this.buildTalentTree(data.tree)}\`\`\``;
+        embed.addField("Tree", tree);
 
         await message.channel.send(embed);
+    }
+
+    private buildTalentTree(tree: CareerTree): string {
+        let maxWidth = 0;
+        let maxHeight = 0;
+        let out = "";
+        tree.talents.forEach((row) => {
+            row.forEach((col) => {
+                const talent = col.split("_");
+                out += col + "\t";
+            });
+            out += "\n";
+        });
+        return out;
     }
 };
