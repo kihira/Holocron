@@ -30,18 +30,19 @@ export = class Talent extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "species");
-        embed.addField("Ranked", data.ranked ? "True" : "False", true);
-        embed.addField("Force", data.force ? "True" : "False", true);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "species");
+        embed.addField("Ranked", item.ranked ? "True" : "False", true);
+        embed.addField("Force", item.force ? "True" : "False", true);
 
-        if (!data.activation) {
+        if (!item.activation) {
             embed.addField("Activation", "Passive", true);
         }
         else {
             let value = "Active";
-            if (typeof(data.activation) === "object") {
+            if (typeof(item.activation) === "object") {
                 value += " (";
-                const keys = Object.keys(data.activation);
+                const keys = Object.keys(item.activation);
                 for (let i = 0; i < keys.length; i++) {
                     keys[i] = idToName(keys[i]);
                 }
@@ -51,6 +52,7 @@ export = class Talent extends Command {
             embed.addField("Activation", value, true);
         }
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

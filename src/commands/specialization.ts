@@ -40,7 +40,8 @@ export = class Armor extends Command {
         const tree = `\`\`\`${this.buildTalentTree(data.tree)}\`\`\``;
         embed.addField("Tree", tree);
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 
     private buildTalentTree(tree: CareerTree): string {

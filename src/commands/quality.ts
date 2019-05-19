@@ -29,10 +29,12 @@ export = class Quality extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "qualities");
-        embed.addField("Active", data.active, true);
-        embed.addField("Ranked", data.ranked ? "True" : "False", true);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "qualities");
+        embed.addField("Active", item.active, true);
+        embed.addField("Ranked", item.ranked ? "True" : "False", true);
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };

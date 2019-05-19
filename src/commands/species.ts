@@ -35,10 +35,11 @@ export = class Species extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "species");
-        embed.addField("Player", data.player ? "True" : "False");
-        if (data.player) {
-            const playerData: IPlayerSpecies = (data as IPlayerSpecies);
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "species");
+        embed.addField("Player", item.player ? "True" : "False");
+        if (item.player) {
+            const playerData: IPlayerSpecies = (item as IPlayerSpecies);
             embed.addField("Brawn", playerData.characteristics.brawn, true);
             embed.addField("Agility", playerData.characteristics.agility, true);
             embed.addField("Intellect", playerData.characteristics.intellect, true);
@@ -52,6 +53,7 @@ export = class Species extends Command {
             embed.addField("Starting XP", playerData.xp, true);
         }
 
-        await message.channel.send(embed);
+        if (msg === undefined || !msg.editable) await message.channel.send(embed);
+        else await msg.edit(embed);
     }
 };
