@@ -8,21 +8,21 @@
     "debug": "node %NODE_DEBUG_OPTION% index.js"
   },
   "dependencies": {
-    "discord.js": "11.4.2",
-    "dotenv": "6.2.0",
+    "@discordjs/uws": "^11.149.1",
+    "discord.js": "11.5.0",
+    "dotenv": "8.0.0",
     "erlpack": "discordapp/erlpack",
     "lodash": "4.17.11",
-    "mongodb": "3.1.10",
-    "prom-client": "11.2.1",
-    "uws": "9.14.0",
-    "winston": "3.1.0"
+    "mongodb": "3.2.5",
+    "prom-client": "11.3.0",
+    "winston": "3.2.1"
   },
   "devDependencies": {
-    "@types/dotenv": "6.1.0",
-    "@types/lodash": "4.14.119",
-    "@types/mongodb": "3.1.18",
-    "@types/node": "10.12.18",
-    "tslint": "5.12.0",
-    "typescript": "3.2.2"
+    "@types/dotenv": "6.1.1",
+    "@types/lodash": "4.14.129",
+    "@types/mongodb": "3.1.27",
+    "@types/node": "12.0.2",
+    "tslint": "5.16.0",
+    "typescript": "3.4.5"
   }
 }
