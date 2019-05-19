@@ -34,10 +34,11 @@ export = class Armor extends Command {
             return;
         }
 
-        const embed = createEmbed(message, data, "specializations");
-        embed.addField("Career Skills", data.base_skills.map((value) => idToName(value)).join(" ,"));
-        embed.addField(`${idToName(data._id)} Bonus Career Skills`, data.bonus_skills.map((value) => idToName(value)).join(" ,"));
-        const tree = `\`\`\`${this.buildTalentTree(data.tree)}\`\`\``;
+        const {item, msg} = data;
+        const embed = createEmbed(message, item, "specializations");
+        embed.addField("Career Skills", item.base_skills.map((value) => idToName(value)).join(" ,"));
+        embed.addField(`${idToName(item._id)} Bonus Career Skills`, item.bonus_skills.map((value) => idToName(value)).join(" ,"));
+        const tree = `\`\`\`${this.buildTalentTree(item.tree)}\`\`\``;
         embed.addField("Tree", tree);
 
         if (msg === undefined || !msg.editable) await message.channel.send(embed);
@@ -45,8 +46,6 @@ export = class Armor extends Command {
     }
 
     private buildTalentTree(tree: CareerTree): string {
-        let maxWidth = 0;
-        let maxHeight = 0;
         let out = "";
         tree.talents.forEach((row) => {
             row.forEach((col) => {
