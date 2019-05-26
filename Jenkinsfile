@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Cleanup') {
             steps {
-                sh "docker rmi kihira/Holocron:$BUILD_NUMBER"
+                sh "docker rmi kihira/holocron:$BUILD_NUMBER"
             }
         }
     }
