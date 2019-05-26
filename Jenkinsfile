@@ -5,7 +5,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'yarn install'
                 script {
                     app = docker.build("kihira/holocron")
                 }
