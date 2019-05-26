@@ -36,13 +36,13 @@ pipeline {
                 sh "docker rmi kihira/holocron:$BUILD_NUMBER"
             }
         }
-        post {
-            failure {
-                setBuildStatus("Build failed", "FAILURE");
-            }
-            success {
-                setBuildStatus("Build complete", "SUCCESS");
-            }
+    }
+    post {
+        failure {
+            setBuildStatus("Build failed", "FAILURE");
+        }
+        success {
+            setBuildStatus("Build complete", "SUCCESS");
         }
     }
 }
