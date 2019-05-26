@@ -1,12 +1,13 @@
-def app
-
 pipeline {
-    agent { node { label 'master' } }
+    agent any
+    environment {
+        image = ''
+    }
     stages {
         stage('Build') {
             steps {
                 script {
-                    app = docker.build("kihira/holocron")
+                    image = docker.build 'kihira/holocron' + ":$BUILD_NUMBER"
                 }
             }
         }
@@ -14,10 +15,14 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        app.tag(env.BUILD_ID)
-                        app.push('latest')
+                        app.push()
                     }
                 }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
     }
