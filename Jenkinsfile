@@ -1,7 +1,7 @@
 def app
 
 pipeline {
-    agent none
+    agent { node { label 'master' } }
     stages {
         stage('Build') {
             steps {
