@@ -1,6 +1,6 @@
-pipeline {
-    def app
+def app
 
+pipeline {
     agent {
         docker {
             image 'node:10'
@@ -10,14 +10,18 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'yarn install'
-                app = docker.build("kihira/holocron")
+                script {
+                    app = docker.build("kihira/holocron")
+                }
             }
         }
         stage('Push') {
             steps {
-                docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                    app.tag(env.BUILD_ID)
-                    app.push('latest')
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        app.tag(env.BUILD_ID)
+                        app.push('latest')
+                    }
                 }
             }
         }
