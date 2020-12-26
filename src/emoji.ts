@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { logger } from "./logger";
+import { logErrorThenNull, logger } from "./logger";
 
 // Simple file for storing a cache of emojis so no need to constantly look them up
 // Also maps non emoji names to emoji
@@ -18,18 +18,18 @@ class EmojiRegistery {
         ["DESPAIR", "despair"],
     ]);
 
-    // tslint:disable-next-line:no-empty
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     constructor() {}
 
     public async init(client: Client) {
-        const guild = client.guilds.get(process.env.EMOJI_GUILD || "");
-        if (process.env.EMOJI_GUILD === undefined || guild === undefined) {
+        const guild = await client.guilds.fetch(process.env.EMOJI_GUILD || "").catch(logErrorThenNull);
+        if (process.env.EMOJI_GUILD === undefined || guild === null) {
             logger.error("Emoji guild not defined or invalid guild ID, emoji's will not work");
             return;
         }
 
         this.emojiMap.forEach((value, key) => {
-            const emoji = guild.emojis.find("name", value);
+            const emoji = guild.emojis.cache.find(e => e.name == value);
             if (emoji === undefined || emoji === null) {
                 logger.error(`Unable to find emoji ${value} for ${key}`);
             }
@@ -40,7 +40,7 @@ class EmojiRegistery {
         });
 
         // Load all emojis from the guild
-        guild.emojis.forEach((element) => {
+        guild.emojis.cache.forEach(element => {
             this.emojiMap.set(element.name, element.toString());
         });
     }

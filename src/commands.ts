@@ -40,7 +40,7 @@ class CommandRegistry {
     }
 
     public async loadAllCommands() {
-        const list = await promisify(readdir)("./src/commands/");
+        const list = await promisify(readdir)("./dist/commands/");
         list.forEach(async (value) => {
             if (value.endsWith(".js")) {
                 await this.loadCommand(value);

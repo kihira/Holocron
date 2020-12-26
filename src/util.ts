@@ -1,4 +1,4 @@
-import { Message, RichEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { defaultTo } from "lodash";
 import { Entry } from "./db";
 import { EmojiCache } from "./emoji";
@@ -38,10 +38,10 @@ export function format(input: string): string {
         .replace(/\[BR]/g, "\n");
 }
 
-export function createEmbed(message: Message, data: Entry, endpoint?: string, name?: string): RichEmbed {
-    const embed = new RichEmbed();
+export function createEmbed(message: Message, data: Entry, endpoint?: string, name?: string): MessageEmbed {
+    const embed = new MessageEmbed();
     embed.setTitle(name || idToName(data._id as string));
-    embed.setAuthor(message.member.displayName, message.author.avatarURL);
+    embed.setAuthor(message.member?.displayName, message.author.avatarURL() ?? "");
     if (data.description) embed.setDescription(format(data.description));
     embed.setFooter(data.index.join(", "));
     embed.setColor("DARK_RED");

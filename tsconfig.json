@@ -5,7 +5,9 @@
     "moduleResolution": "node",
     "target": "es2017",
     "strict": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "exclude": [
     "node_modules"

@@ -18,11 +18,10 @@ export abstract class Command {
         this.arguments = args;
     }
 
-    public abstract async run(message: Message, args: string[]): Promise<void>;
+    public abstract run(message: Message, args: string[]): Promise<void>;
 
     // tslint:disable-next-line:no-empty
-    public async init(client: Client): Promise<void> {
-    }
+    public async init(client: Client): Promise<void> {}
 }
 
 export enum PermissionLevel {
@@ -38,7 +37,7 @@ export class Argument {
     public readonly description: string;
     public readonly required: boolean;
 
-    constructor(name: string, description?: string, required: boolean = true) {
+    constructor(name: string, description?: string, required = true) {
         this.name = name;
         this.description = description || "";
         this.required = required;

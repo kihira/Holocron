@@ -17,7 +17,7 @@ export = class Config extends Command {
                     message.reply(`Invalid prefix! Only the following prefixes are supported \`${this.prefixes.join(" ")}\``);
                     return;
                 }
-                Database.Settings.collection("guilds").updateOne({_id: message.guild.id}, {prefix: value}, {upsert: true});
+                Database.Settings.collection("guilds").updateOne({_id: message.guild?.id}, {prefix: value}, {upsert: true});
                 message.reply(`Updated prefix to \`${value}\``);
                 break;
             default:

@@ -6,8 +6,8 @@ export = class Stop extends Command {
         super("stop", undefined, PermissionLevel.BOT_ADMIN);
     }
 
-    public async run(message: Message, args: string[]) {
-        await message.client.destroy();
+    public async run(message: Message, args: string[]): Promise<void> {
+        message.client.destroy();
         process.exit(0);
     }
 };

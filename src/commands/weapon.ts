@@ -1,5 +1,5 @@
-import { Client, Collection, Emoji, Message } from "discord.js";
-import { Database, Entry, findOne, SelectorResult } from "../db";
+import { Message } from "discord.js";
+import { Database, Entry, findOne } from "../db";
 import { EmojiCache } from "../emoji";
 import { createEmbed, escapeRegex, idToName } from "../util";
 import { Argument, Command } from "./command";
@@ -26,7 +26,7 @@ export = class Weapon extends Command {
         super(["weapon", "weapons", "w"], [new Argument("name")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const search = escapeRegex(args.join(" "));
         const data = await findOne<IWeapon>(Database.Data.collection("weapons"), {
             name: {
@@ -59,6 +59,6 @@ export = class Weapon extends Command {
         }
 
         if (msg === undefined || !msg.editable) await message.channel.send(embed);
-        else await msg.edit(embed);
+        else await msg.edit("", { embed: embed } );
     }
 };

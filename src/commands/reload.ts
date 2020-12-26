@@ -7,7 +7,7 @@ export = class Reload extends Command {
         super("reload", [new Argument("command")], PermissionLevel.BOT_ADMIN);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const cmdName = args[0];
         const cmd = Commands.get(cmdName);
         if (cmd === undefined) {

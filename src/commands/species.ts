@@ -1,7 +1,7 @@
-import { Message, RichEmbed } from "discord.js";
+import { Message } from "discord.js";
 import { ICharacteristics } from "../characteristics";
 import { Database, Entry, findOne } from "../db";
-import { createEmbed, escapeRegex, format, idToName, nameToId } from "../util";
+import { createEmbed, escapeRegex, nameToId } from "../util";
 import { Argument, Command } from "./command";
 
 interface ISpecies extends Entry {
@@ -21,7 +21,7 @@ export = class Species extends Command {
         super("species", [new Argument("species")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const search = escapeRegex(nameToId(args[0]));
         const data = await findOne<ISpecies>(Database.Data.collection("species"), {
             _id: {

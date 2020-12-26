@@ -8,6 +8,12 @@ export const logger = winston.createLogger({
     ],
 });
 
+export async function logErrorThenNull(message: any): Promise<null>
+{
+    logger.error(message);
+    return null;
+}
+
 if (process.env.NODE_ENV !== "production") {
     logger.add(new winston.transports.Console({
         format: winston.format.simple(),

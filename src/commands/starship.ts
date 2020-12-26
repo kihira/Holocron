@@ -1,4 +1,4 @@
-import { Message, RichEmbed } from "discord.js";
+import { Message } from "discord.js";
 import { Database, Entry, findOne } from "../db";
 import { createEmbed, escapeRegex } from "../util";
 import { Argument, Command } from "./command";
@@ -43,7 +43,7 @@ export = class Starship extends Command {
         super(["starship", "spaceship"], [new Argument("spaceship")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const search = escapeRegex(args[0]);
         const data = await findOne<IStarship>(Database.Data.collection("starships"), {
             name: {

@@ -43,7 +43,7 @@ export interface SelectorResult<T> { msg?: Message; item: T; }
  * @param filter The Query
  */
 export async function findOne<T extends Entry>(collection: Collection, filter: FilterQuery<T>, message: Message): Promise<SelectorResult<T> | undefined> {
-    const results = await collection.find<T>(filter).limit(5);
+    const results = collection.find<T>(filter).limit(5);
     const count = await results.count(true);
 
     if (count === 0) {

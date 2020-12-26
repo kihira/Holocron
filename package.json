@@ -4,25 +4,30 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -w -p tsconfig.json",
-    "start": "node index.js",
-    "debug": "node %NODE_DEBUG_OPTION% index.js"
+    "start": "node dist/index.js",
+    "debug": "node %NODE_DEBUG_OPTION% dist/index.js",
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@discordjs/uws": "^11.149.1",
-    "discord.js": "11.5.0",
-    "dotenv": "8.0.0",
-    "erlpack": "discordapp/erlpack",
-    "lodash": "4.17.19",
-    "mongodb": "3.2.5",
-    "prom-client": "11.3.0",
-    "winston": "3.2.1"
+    "bufferutil": "^4.0.2",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "erlpack": "github:discord/erlpack",
+    "lodash": "^4.17.20",
+    "mongodb": "^3.6.3",
+    "prom-client": "^13.0.0",
+    "utf-8-validate": "^5.0.3",
+    "winston": "^3.3.3",
+    "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
-    "@types/dotenv": "6.1.1",
-    "@types/lodash": "4.14.129",
-    "@types/mongodb": "3.1.27",
-    "@types/node": "12.0.2",
-    "tslint": "5.16.0",
-    "typescript": "3.4.5"
+    "@types/lodash": "^4.14.166",
+    "@types/mongodb": "^3.6.3",
+    "@types/node": "^14.14.16",
+    "@types/ws": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "eslint": "^7.16.0",
+    "typescript": "^4.1.3"
   }
 }

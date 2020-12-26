@@ -1,4 +1,4 @@
-import { Client, Collection, Message, RichEmbed } from "discord.js";
+import { Client, Collection, Message, MessageEmbed } from "discord.js";
 import { defaultTo, forIn, mergeWith } from "lodash";
 import { EmojiCache } from "../emoji";
 import { logger } from "../logger";
@@ -21,7 +21,7 @@ interface DieSide extends Values {
 }
 
 export = class Roll extends Command {
-    private diceRegex: RegExp = /(\d{0,2})([a-z]+)/;
+    private diceRegex = /(\d{0,2})([a-z]+)/;
     private diceValues = new Collection<string, DieSide[]>([
         ["ability", [
             {emoji: "abilityBlank"},
@@ -107,19 +107,19 @@ export = class Roll extends Command {
         super(["roll", "r"], [new Argument("dice")]);
     }
 
-    public async init(client: Client) {
+    public async init(client: Client): Promise<void> {
         if (process.env.EMOJI_GUILD === undefined) {
             logger.error("Emoji guild not defined, emoji's will not work");
             return;
         }
-        const guild = client.guilds.get(process.env.EMOJI_GUILD || "");
+        const guild = await client.guilds.fetch(process.env.EMOJI_GUILD || "");
         if (guild === undefined) {
             logger.error(`Unable to find guild ${process.env.EMOJI_GUILD} for emoji's`);
             return;
         }
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const diceResults: DieSide[] = [];
 
         for (const arg of args) {
@@ -139,8 +139,8 @@ export = class Roll extends Command {
         }
         const results: Values = this.calcResult(diceResults);
         const displayResults = this.displayResults(results);
-        const embed = new RichEmbed();
-        embed.setAuthor(message.member.displayName, message.author.avatarURL);
+        const embed = new MessageEmbed();
+        embed.setAuthor(message.member?.displayName, message.author.avatarURL() ?? "");
         embed.setColor("DARK_RED");
         embed.addField("Roll", diceResults.map((value) => value.emoji).join(""));
         if (displayResults.length > 0) embed.addField("Results", displayResults);
@@ -164,7 +164,7 @@ export = class Roll extends Command {
                 return defaultTo(objValue, 0) + srcValue;
             });
         });
-        delete (results as DieSide).emoji; // The merge causes emoji to be copied over, delete it
+        // TODO delete (results as DieSide).emoji; // The merge causes emoji to be copied over, delete it
 
         // Calc success/failure
         if (results.success !== undefined && results.failure !== undefined) {

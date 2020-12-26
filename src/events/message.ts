@@ -4,8 +4,9 @@ import { PermissionLevel } from "../commands/command";
 import { logger } from "../logger";
 import { GuildSettings } from "../settings";
 
-export = async (message: Message) => {
+export = async (message: Message): Promise<void> => {
     if (message.author.bot) return;
+    if (message.guild == null) return;
     const settings = await GuildSettings.getSettings(message.guild);
     if (!message.content.startsWith(settings.prefix)) return;
 
@@ -31,7 +32,7 @@ export = async (message: Message) => {
                 }
                 break;
             case PermissionLevel.GUILD_OWNER:
-                if (message.author.id !== message.guild.ownerID) {
+                if (message.author.id !== message.guild?.ownerID) {
                     await message.reply(`You do not have permission to use \`${cmd}\``);
                     return;
                 }
