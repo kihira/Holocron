@@ -24,7 +24,7 @@ interface DieSide extends Values
 
 export = class Roll extends Command
 {
-    private readonly diceRegex = /(\d{0,2})([a-z]+)/;
+    private readonly diceRegex = /(\d{0,2})([a-z]+)/g;
     private readonly diceValues = new Collection<string[], DieSide[]>([
         [["ability", "g"], [
             {emoji: "abilityBlank"},
@@ -36,7 +36,7 @@ export = class Roll extends Command
             {emoji: "abilitySA", success: 1, advantage: 1},
             {emoji: "abilityA", advantage: 1},
         ]],
-        [["proficiency", "y"], [
+        [["proficiency", "y", "prof"], [
             {emoji: "proficiencyBlank"},
             {emoji: "proficiencyS", success: 1},
             {emoji: "proficiencyAA", advantage: 2},
@@ -50,7 +50,7 @@ export = class Roll extends Command
             {emoji: "proficiencyAA", advantage: 2},
             {emoji: "proficiencyT", triumph: 1},
         ]],
-        [["difficulty", "p"], [
+        [["difficulty", "p", "d"], [
             {emoji: "difficultyBlank"},
             {emoji: "difficultyFT", failure: 1, threat: 1},
             {emoji: "difficultyT", threat: 1},
@@ -132,15 +132,15 @@ export = class Roll extends Command
 
         for (const arg of args)
         {
-            const match = arg.match(this.diceRegex);
-            if (match != null)
+            let match: RegExpExecArray | null;
+            while ((match = this.diceRegex.exec(arg)) !== null)
             {
                 if (match.length < 3)
                 {
                     await message.reply("Invalid dice roll");
                     return;
                 }
-                const dice = this.diceValues.find((_v, k) => k.includes(match[2]));
+                const dice = this.diceValues.find((_v, k) => k.includes((match as RegExpExecArray)[2]));
                 if (dice === undefined)
                 {
                     await message.reply(`Invalid dice \`${match[2]}\``);
@@ -156,7 +156,7 @@ export = class Roll extends Command
         embed.setAuthor(message.member?.displayName, message.author.avatarURL() ?? "");
         embed.setColor("DARK_RED");
         embed.addField("Roll", diceResults.map((value) => EmojiCache.get(value.emoji)).join(""));
-        embed.addField("Results", displayResults);
+        embed.addField("Results", displayResults ?? "");
         await message.channel.send(embed);
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
