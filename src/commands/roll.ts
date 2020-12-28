@@ -5,7 +5,8 @@ import { logger } from "../logger";
 import { defaultParse } from "../util";
 import { Argument, Command } from "./command";
 
-interface Values {
+interface Values
+{
     success?: number;
     advantage?: number;
     triumph?: number;
@@ -16,14 +17,16 @@ interface Values {
     dark?: number;
 }
 
-interface DieSide extends Values {
+interface DieSide extends Values
+{
     emoji: string;
 }
 
-export = class Roll extends Command {
-    private diceRegex = /(\d{0,2})([a-z]+)/;
-    private diceValues = new Collection<string, DieSide[]>([
-        ["ability", [
+export = class Roll extends Command
+{
+    private readonly diceRegex = /(\d{0,2})([a-z]+)/;
+    private readonly diceValues = new Collection<string[], DieSide[]>([
+        [["ability", "g"], [
             {emoji: "abilityBlank"},
             {emoji: "abilityA", advantage: 1},
             {emoji: "abilitySS", success: 2},
@@ -33,7 +36,7 @@ export = class Roll extends Command {
             {emoji: "abilitySA", success: 1, advantage: 1},
             {emoji: "abilityA", advantage: 1},
         ]],
-        ["proficiency", [
+        [["proficiency", "y"], [
             {emoji: "proficiencyBlank"},
             {emoji: "proficiencyS", success: 1},
             {emoji: "proficiencyAA", advantage: 2},
@@ -47,7 +50,7 @@ export = class Roll extends Command {
             {emoji: "proficiencyAA", advantage: 2},
             {emoji: "proficiencyT", triumph: 1},
         ]],
-        ["difficulty", [
+        [["difficulty", "p"], [
             {emoji: "difficultyBlank"},
             {emoji: "difficultyFT", failure: 1, threat: 1},
             {emoji: "difficultyT", threat: 1},
@@ -57,7 +60,7 @@ export = class Roll extends Command {
             {emoji: "difficultyF", failure: 1},
             {emoji: "difficultyT", threat: 1},
         ]],
-        ["challenge", [
+        [["challenge", "r"], [
             {emoji: "challengeBlank"},
             {emoji: "challengeF", failure: 1},
             {emoji: "challengeT", threat: 1},
@@ -71,7 +74,7 @@ export = class Roll extends Command {
             {emoji: "challengeTT", threat: 2},
             {emoji: "challengeD", despair: 1},
         ]],
-        ["boost", [
+        [["boost", "b"], [
             {emoji: "boostBlank"},
             {emoji: "boostBlank"},
             {emoji: "boostA", advantage: 1},
@@ -79,7 +82,7 @@ export = class Roll extends Command {
             {emoji: "boostS", success: 1},
             {emoji: "boostAA", advantage: 2},
         ]],
-        ["setback", [
+        [["setback", "blk"], [
             {emoji: "setbackBlank"},
             {emoji: "setbackBlank"},
             {emoji: "setbackF", failure: 1},
@@ -87,7 +90,7 @@ export = class Roll extends Command {
             {emoji: "setbackT", threat: 1},
             {emoji: "setbackT", threat: 1},
         ]],
-        ["force", [
+        [["force", "w"], [
             {emoji: "forceLL", light: 2},
             {emoji: "forceLL", light: 2},
             {emoji: "forceD", dark: 1},
@@ -103,34 +106,43 @@ export = class Roll extends Command {
         ]],
     ]);
 
-    constructor() {
+    constructor()
+    {
         super(["roll", "r"], [new Argument("dice")]);
     }
 
-    public async init(client: Client): Promise<void> {
-        if (process.env.EMOJI_GUILD === undefined) {
+    public async init(client: Client): Promise<void>
+    {
+        if (process.env.EMOJI_GUILD === undefined)
+        {
             logger.error("Emoji guild not defined, emoji's will not work");
             return;
         }
         const guild = await client.guilds.fetch(process.env.EMOJI_GUILD || "");
-        if (guild === undefined) {
+        if (guild === undefined)
+        {
             logger.error(`Unable to find guild ${process.env.EMOJI_GUILD} for emoji's`);
             return;
         }
     }
 
-    public async run(message: Message, args: string[]): Promise<void> {
+    public async run(message: Message, args: string[]): Promise<void>
+    {
         const diceResults: DieSide[] = [];
 
-        for (const arg of args) {
+        for (const arg of args)
+        {
             const match = arg.match(this.diceRegex);
-            if (match != null) {
-                if (match.length < 3) {
+            if (match != null)
+            {
+                if (match.length < 3)
+                {
                     await message.reply("Invalid dice roll");
                     return;
                 }
-                const dice = this.diceValues.get(match[2]);
-                if (dice === undefined) {
+                const dice = this.diceValues.find((_v, k) => k.includes(match[2]));
+                if (dice === undefined)
+                {
                     await message.reply(`Invalid dice \`${match[2]}\``);
                     return;
                 }
@@ -139,59 +151,73 @@ export = class Roll extends Command {
         }
         const results: Values = this.calcResult(diceResults);
         const displayResults = this.displayResults(results);
+
         const embed = new MessageEmbed();
         embed.setAuthor(message.member?.displayName, message.author.avatarURL() ?? "");
         embed.setColor("DARK_RED");
-        embed.addField("Roll", diceResults.map((value) => value.emoji).join(""));
-        if (displayResults.length > 0) embed.addField("Results", displayResults);
+        embed.addField("Roll", diceResults.map((value) => EmojiCache.get(value.emoji)).join(""));
+        embed.addField("Results", displayResults);
         await message.channel.send(embed);
 
         logger.verbose(`Roll Results`, {dice: diceResults, result: results});
     }
 
-    private rollDice(dice: DieSide[], count: number, results: DieSide[]) {
-        for (let i = 0; i < count; i++) {
+    private rollDice(dice: DieSide[], count: number, results: DieSide[])
+    {
+        for (let i = 0; i < count; i++)
+        {
             const result = Math.floor(Math.random() * dice.length);
             results.push(dice[result]);
         }
     }
 
-    private calcResult(rolls: DieSide[]): Values {
+    private calcResult(rolls: DieSide[]): Values
+    {
         const results: Values = {};
 
-        rolls.forEach((value) => {
-            mergeWith(results, value, (objValue, srcValue) => {
+        rolls.forEach((value) =>
+        {
+            mergeWith(results, value, (objValue, srcValue) =>
+            {
                 return defaultTo(objValue, 0) + srcValue;
             });
         });
         // TODO delete (results as DieSide).emoji; // The merge causes emoji to be copied over, delete it
 
         // Calc success/failure
-        if (results.success !== undefined && results.failure !== undefined) {
-            if (results.success > results.failure) {
+        if (results.success !== undefined && results.failure !== undefined)
+        {
+            if (results.success > results.failure)
+            {
                 results.success -= results.failure;
                 results.failure = 0;
             }
-            else if (results.failure > results.success) {
+            else if (results.failure > results.success)
+            {
                 results.failure -= results.success;
                 results.success = 0;
             }
-            else {
+            else
+            {
                 results.failure = 0;
                 results.success = 0;
             }
         }
-        if (results.advantage !== undefined && results.threat !== undefined) {
+        if (results.advantage !== undefined && results.threat !== undefined)
+        {
             // Advantage/disadvantage
-            if (results.advantage > results.threat) {
+            if (results.advantage > results.threat)
+            {
                 results.advantage -= results.threat;
                 results.threat = 0;
             }
-            else if (results.threat > results.advantage) {
+            else if (results.threat > results.advantage)
+            {
                 results.threat -= results.advantage;
                 results.advantage = 0;
             }
-            else {
+            else
+            {
                 results.advantage = 0;
                 results.threat = 0;
             }
@@ -200,10 +226,12 @@ export = class Roll extends Command {
         return results;
     }
 
-    private displayResults(results: Values): string {
+    private displayResults(results: Values): string 
+    {
         let out = "";
-        forIn(results, (value, key) => {
-            out += (EmojiCache.get(key) || "").repeat(defaultTo(value, 0));
+        forIn(results, (value, key) =>
+        {
+            out += EmojiCache.get(key).repeat(defaultTo(value, 0));
         });
         return out;
     }
