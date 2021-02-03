@@ -21,7 +21,7 @@ export = class Armor extends Command {
         super(["armor", "armour"], [new Argument("name")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const search = escapeRegex(args.join(" "));
         const data = await findOne<IArmor>(Database.Data.collection("armor"), {
             name: {

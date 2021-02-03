@@ -1,5 +1,5 @@
 import { logger } from "../logger";
 
-export = async (replayed: number) => {
-    logger.error(`Reconnected to WebSocket, replaying ${replayed} events`);
+export = async (replayed: number): Promise<void> => {
+    logger.warn(`Reconnected to WebSocket, replaying ${replayed} events`, { service: "DiscordJs" });
 };

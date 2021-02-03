@@ -1,5 +1,5 @@
 import { logger } from "../logger";
 
-export = async () => {
-    logger.error("Disconnected from WebSocket, attempting to reconnect");
+export = async (): Promise<void> => {
+    logger.error("Disconnected from WebSocket, attempting to reconnect", { service: "DiscordJs" });
 };

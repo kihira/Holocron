@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2017",
+    "target": "es2019",
     "strict": true,
     "inlineSourceMap": true,
     "rootDir": "src",

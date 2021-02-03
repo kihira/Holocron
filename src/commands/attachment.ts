@@ -1,5 +1,5 @@
-import { Client, Collection, Emoji, Message } from "discord.js";
-import { Database, Entry, findOne, SelectorResult } from "../db";
+import { Message } from "discord.js";
+import { Database, Entry, findOne } from "../db";
 import { EmojiCache } from "../emoji";
 import { createEmbed, escapeRegex, idToName } from "../util";
 import { Argument, Command } from "./command";
@@ -26,7 +26,7 @@ export = class Attachment extends Command {
         super(["weapon", "weapons", "w"], [new Argument("name")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const search = escapeRegex(args.join(" "));
         const data = await findOne<IAttachment>(Database.Data.collection("attachments"), {
             name: {

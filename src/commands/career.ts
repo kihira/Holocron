@@ -14,7 +14,7 @@ export = class Quality extends Command {
         super("career", [new Argument("name")]);
     }
 
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const talent = escapeRegex(args[0]);
         const data = await findOne<ICareer>(Database.Data.collection("careers"), {
             name: {

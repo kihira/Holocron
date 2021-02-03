@@ -8,7 +8,7 @@ export = class Config extends Command {
     constructor() {
         super("config", [new Argument("setting"), new Argument("value")], PermissionLevel.GUILD_OWNER);
     }
-    public async run(message: Message, args: string[]) {
+    public async run(message: Message, args: string[]): Promise<void> {
         const setting = args[0];
         const value = args[1];
         switch (setting) {

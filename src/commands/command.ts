@@ -20,7 +20,7 @@ export abstract class Command {
 
     public abstract run(message: Message, args: string[]): Promise<void>;
 
-    // tslint:disable-next-line:no-empty
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     public async init(client: Client): Promise<void> {}
 }
 

@@ -1,5 +1,5 @@
 import { logger } from "../logger";
 
-export = async (info: string) => {
-    logger.error(info);
+export = async (info: string): Promise<void> => {
+    logger.error(info, { service: "DiscordJs" });
 };
